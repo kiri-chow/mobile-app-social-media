@@ -84,9 +84,10 @@ import { notice } from "../assets/alerts";
 import { deletePost, getReplyList } from "../assets/api/post";
 import AvatarItem from "./AvatarItem.vue";
 import NewPostItem from "./NewPostItem.vue";
+import { userInfo } from "../assets/api/base";
 
 
-
+const isAdmin = userInfo.role === 'admin';
 const props = defineProps({
     user: Object,
     post: Object,
@@ -106,7 +107,7 @@ const postTime = computed(() => {
     }
 })
 const editable = computed(() => {
-    return props.user._id === props.post.user_id;
+    return props.user._id === props.post.user_id || isAdmin;
 })
 
 onMounted(async () => {

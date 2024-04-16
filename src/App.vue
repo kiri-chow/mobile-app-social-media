@@ -6,16 +6,16 @@
 
 <script setup>
 import { IonApp, IonRouterOutlet } from '@ionic/vue';
-import { ref, provide, onMounted } from 'vue';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getCurrentUser } from './assets/api/user';
 
 
 const router = useRouter();
-const userId = ref("");
-provide('userId', userId.value);
 
-
+onMounted(() => {
+  if (!localStorage.getItem('token')) {
+    router.push('/login');
+  }
+})
 </script>
-<style scoped>
-</style>
+<style scoped></style>

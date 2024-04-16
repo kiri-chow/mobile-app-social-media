@@ -6,7 +6,7 @@ export async function getPostList(page=1, perPage=20) {
         `page=${page}`,
         `perPage=${perPage}`,
     ];
-    return callApi(`/api/posts/own?${params}`);
+    return callApi(`/api/posts/own?${params.join('&')}`);
 }
 
 export async function createPost(data, id) {

@@ -10,48 +10,29 @@ const routes = [
     redirect: '/home'
   },
   {
+    path: '/login',
+    name: 'login',
+    component: () => import('../views/LoginPage.vue')
+  },
+  {
     path: '/',
     component: NavTabItem,
     children: [
       {
         path: 'home',
-        component: () => {
-          if (localStorage.getItem('token')) {
-            return HomePage;
-          } else {
-            return import('../views/LoginPage.vue');
-          }
-        }
+        component: HomePage,
       },
       {
         path: 'search',
-        component: () => {
-          if (localStorage.getItem('token')) {
-            return import('../views/SearchPage.vue');
-          } else {
-            return import('../views/LoginPage.vue');
-          }
-        }
+        component: () => import('../views/SearchPage.vue')
       },
       {
         path: 'stats',
-        component: () => {
-          if (localStorage.getItem('token')) {
-            return import('../views/StatsPage.vue');
-          } else {
-            return import('../views/LoginPage.vue');
-          }
-        }
+        component: () => import('../views/StatsPage.vue')
       },
       {
         path: 'profile',
-        component: () => {
-          if (localStorage.getItem('token')) {
-            return import('../views/ProfilePage.vue');
-          } else {
-            return import('../views/LoginPage.vue')
-          }
-        }
+        component: () => import('../views/ProfilePage.vue')
       },
     ]
   }

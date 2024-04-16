@@ -31,14 +31,32 @@
             <FollowersChart />
           </ion-col>
         </ion-row>
+        <div v-if="isAdmin">
+          <ion-row>
+            <ion-col>
+              <UsersChart />
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <UsersGenderChart />
+            </ion-col>
+          </ion-row>
+        </div>
       </ion-grid>
     </ion-content>
   </ion-page>
 </template>
-
-<script setup>
+<script setup lang="js">
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonGrid, IonRow, IonCol } from '@ionic/vue';
+import { userInfo } from '../assets/api/base';
+import { ref } from 'vue';
 import FollowersChart from '../components/charts/FollowersChart.vue';
+import UsersChart from '../components/charts/UsersChart.vue';
+import UsersGenderChart from '../components/charts/UsersGenderChart.vue';
+
+
+const isAdmin = ref(userInfo.role === 'admin');
 </script>
 
 <style scoped></style>

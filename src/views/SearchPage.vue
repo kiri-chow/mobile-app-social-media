@@ -1,12 +1,11 @@
 <script setup lang="js">
 import {
   IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
-  IonGrid, IonRow, IonCol, IonSearchbar
+  IonGrid, IonRow, IonCol, IonSearchbar, IonText, IonSpinner,
 } from '@ionic/vue';
 import { ref, onMounted, computed } from "vue";
 import userItem from '../components/userItem.vue';
 import { getFollowed, getAllUsers } from '../assets/api/user';
-import { popLoading } from '../assets/alerts';
 
 
 const followedId = ref(new Set());
@@ -16,7 +15,7 @@ const page = ref(1);
 const perPage = ref(20);
 const maxPage = ref(2);
 const isMoreUsers = computed(() => page.value < maxPage.value)
-const pending = ref(false);
+const pending = ref(true);
 
 
 onMounted(async () => {
@@ -32,6 +31,8 @@ async function getUserByPage() {
   pending.value = true;
   try {
     let data = await getAllUsers(search.value, page.value, perPage.value);
+    page.value = data.page;
+    perPage.value = data.perPage;
     maxPage.value = Math.ceil(data.total / perPage.value);
     return data.data;
   } finally {
@@ -94,7 +95,7 @@ function handleUnfollowing(id) {
       <ion-grid>
         <ion-row>
           <ion-col>
-            <ion-searchbar v-model="search" @change="searchUsers" placeholder="Search user..."></ion-searchbar>
+            <ion-searchbar v-model="search" @change="reloadUserList" placeholder="Search user..."></ion-searchbar>
           </ion-col>
         </ion-row>
         <ion-row>

@@ -14,7 +14,7 @@
                         </ion-col>
                         <ion-col class="ion-text-start">
                             <ion-icon class="profile-control" role="button" :color="isEditing ? 'danger' : 'success'"
-                                :icon="createOutline" @click="() => {isEditing = !isEditing}"></ion-icon>
+                                :icon="createOutline" @click="toggleEdit"></ion-icon>
                         </ion-col>
                         <ion-col class="ion-text-end">
                             <ion-icon id="logout" class="profile-control" role="button" color="danger"
@@ -37,7 +37,7 @@
             </ion-row>
             <ion-row v-else>
                 <ion-col>
-                    <RegisterItem :userData="user" @cancel="()=>{isEditing = !isEditing}"/>
+                    <RegisterItem :userData="user" :isUpdate="true" @cancel="()=>{isEditing = !isEditing}"/>
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -50,6 +50,7 @@ import { computed, defineProps, ref } from "vue";
 import AvatarItem from './AvatarItem.vue';
 import RegisterItem from "./RegisterItem.vue";
 import { logout } from "../assets/api/base";
+
 
 const props = defineProps({
     user: Object,
@@ -75,6 +76,12 @@ const logoutButtons = [
         }
     },
 ];
+
+function toggleEdit() {
+    if (props.user) {
+        isEditing.value = !isEditing.value;
+    }
+}
 
 </script>
 <style>

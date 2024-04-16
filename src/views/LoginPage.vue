@@ -1,51 +1,67 @@
 <template>
-    <ion-page>
-        <ion-header :translucent="true">
-            <ion-toolbar >
-              <ion-row>
-                <ion-col size="auto">
-                  <img class="logo" src="@/assets/logo-white.svg" />
-                </ion-col>
-                <ion-col>
-                  <ion-title>Login</ion-title>
-                </ion-col>
-              </ion-row>
-            </ion-toolbar>
-          </ion-header>
-          <ion-content :fullscreen="true">
-            <ion-header collapse="condense">
-              <ion-toolbar >
-                <ion-row>
-                  <ion-col size="auto">
-                    <img class="logo" src="@/assets/logo-white.svg" />
-                  </ion-col>
-                  <ion-col>
-                    <ion-title>Login</ion-title>
-                  </ion-col>
-                </ion-row>
-              </ion-toolbar>
-            </ion-header>
-            <div id="container">
-                <img src="@/assets/logo.svg" alt="Logo" width="50" height="50" />
-                <ion-segment v-model="currentSegment">
-                    <ion-segment-button value="login">
-                        <ion-label>Login</ion-label>
-                    </ion-segment-button>
-                    <ion-segment-button value="register">
-                        <ion-label>Register</ion-label>
-                    </ion-segment-button>
-                </ion-segment>
-                <LoginItem v-if="currentSegment === 'login'" />
-                <RegisterItem v-else />
-            </div>
-        </ion-content>
-    </ion-page>
+  <ion-page>
+    <ion-header :translucent="true">
+      <ion-toolbar>
+        <ion-row>
+          <ion-col size="auto">
+            <img class="logo" src="@/assets/logo-white.svg" />
+          </ion-col>
+          <ion-col>
+            <ion-title>Incredible Network</ion-title>
+          </ion-col>
+        </ion-row>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content :fullscreen="true">
+      <ion-header collapse="condense">
+        <ion-toolbar>
+          <ion-row>
+            <ion-col size="auto">
+              <img class="logo" src="@/assets/logo-white.svg" />
+            </ion-col>
+            <ion-col>
+              <ion-title>Incredible Network</ion-title>
+            </ion-col>
+          </ion-row>
+        </ion-toolbar>
+      </ion-header>
+      <ion-card id="container">
+          <img src="@/assets/logo.svg" alt="Logo" width="60" height="60" />
+          <ion-card-header>
+            <ion-text color="primary">
+              <h5>
+                Login for our incredible social network!
+              </h5>
+            </ion-text>
+          </ion-card-header>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-segment v-model="currentSegment">
+                <ion-segment-button value="login">
+                  <ion-label>Login</ion-label>
+                </ion-segment-button>
+                <ion-segment-button value="register">
+                  <ion-label>Register</ion-label>
+                </ion-segment-button>
+              </ion-segment>
+              <LoginItem v-if="currentSegment === 'login'" />
+              <RegisterItem v-else />
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card>
+    </ion-content>
+  </ion-page>
 </template>
   
 <script setup >
-import { IonContent, IonHeader, IonPage, IonTitle,
-    IonToolbar, IonSegment, IonSegmentButton, IonLabel,
- } from '@ionic/vue';
+import {
+  IonContent, IonHeader, IonPage, IonTitle,
+  IonToolbar, IonSegment, IonSegmentButton, IonLabel,
+  IonGrid, IonRow, IonCol, IonCard, IonCardHeader,
+  IonText,
+} from '@ionic/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import RegisterItem from '../components/RegisterItem.vue';
@@ -57,31 +73,13 @@ const currentSegment = ref('login');
   
 <style scoped>
 #container {
-    text-align: center;
-
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-#container strong {
-    font-size: 20px;
-    line-height: 26px;
-}
-
-#container p {
-    font-size: 16px;
-    line-height: 22px;
-
-    color: #8c8c8c;
-
-    margin: 0;
-}
-
-#container a {
-    text-decoration: none;
+  padding-top: 2.5rem;
+  text-align: center;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 </style>
   

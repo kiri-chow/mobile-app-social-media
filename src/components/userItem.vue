@@ -1,18 +1,20 @@
 <script setup>
 import { defineProps, defineEmits, computed, ref } from 'vue';
-import { IonCard, IonRow, IonCol, IonIcon, IonButton, IonText, IonSpinner } from '@ionic/vue';
-import { personAdd, personRemove } from 'ionicons/icons';
+import { IonCard, IonRow, IonCol, IonIcon, IonButton, IonText, IonSpinner, alertController } from '@ionic/vue';
+import { personAdd, personRemove, trash } from 'ionicons/icons';
 import { userInfo } from '../assets/api/base';
-import { followUser, unfollowUser } from '../assets/api/user';
+import { followUser, unfollowUser, deleteUser } from '../assets/api/user';
 import { popAlert } from '../assets/alerts';
 import AvatarItem from './AvatarItem.vue';
 
 
+const isAdmin = ref(userInfo.role === 'admin');
 const pending = ref(false);
 const props = defineProps({
     user: Object,
     followedId: Set,
 });
+const isDeleted = ref(false);
 const buttonType = computed(() => {
     if (props.user._id === userInfo._id) {
         return 0;
@@ -25,6 +27,7 @@ const buttonType = computed(() => {
 
 const emit = defineEmits(['follow', 'unfolllow']);
 
+// follow or unfollow
 async function followOrUnfollow() {
     const id = props.user._id;
     pending.value = true;
@@ -43,9 +46,39 @@ async function followOrUnfollow() {
         pending.value = false;
     }
 }
+
+// delete user
+async function alertDelete() {
+    const alert = await alertController.create({
+        header: "Warning!!",
+        message: `Do you want to delete @${props.user.username}?`,
+        buttons: [
+            "Cancel",
+            {
+                text: "OK",
+                role: "confirm",
+                handler: removeOneUser,
+            }
+        ]
+    });
+    alert.present();
+}
+
+async function removeOneUser() {
+    pending.value = true;
+    try {
+        const data = await deleteUser(props.user._id);
+        isDeleted.value = true;
+    } catch (err) {
+        popAlert(err.message);
+        console.error(err);
+    } finally {
+        pending.value = false;
+    }
+}
 </script>
 <template>
-    <IonCard class="user">
+    <IonCard :class="`user ${isDeleted ? 'ion-hide' : ''}`">
         <ion-row class="ion-align-items-center">
             <ion-col size='auto'>
                 <AvatarItem size="small" :user="user" />
@@ -56,9 +89,15 @@ async function followOrUnfollow() {
                 </ion-text>
                 <ion-text color="medium">@{{ user.username }}</ion-text>
             </ion-col>
+            <ion-col v-if='isAdmin && buttonType !== 0' size='auto'>
+                <ion-button @click="alertDelete" color="danger" :disabled="pending">
+                    <ion-spinner class="btn-icon" v-if="pending"></ion-spinner>
+                    <ion-icon class="btn-icon" v-else :icon="trash"></ion-icon>
+                </ion-button>
+            </ion-col>
             <ion-col size='auto'>
-                <ion-button @click="followOrUnfollow" v-if="buttonType !== 0" :color="buttonType === 1 ? 'primary' : 'danger'"
-                    :disabled="pending">
+                <ion-button @click="followOrUnfollow" v-if="buttonType !== 0"
+                    :color="buttonType === 1 ? 'primary' : 'danger'" :disabled="pending">
                     <ion-spinner class="btn-icon" v-if="pending"></ion-spinner>
                     <ion-icon class="btn-icon" v-else :icon="buttonType === 1 ? personAdd : personRemove"></ion-icon>
                 </ion-button>
@@ -74,6 +113,6 @@ ion-spinner {
 .btn-icon {
     font-size: 1.5rem;
     width: 1.5rem;
-    height:1.5rem;
+    height: 1.5rem;
 }
 </style>

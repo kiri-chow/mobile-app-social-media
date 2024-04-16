@@ -47,7 +47,7 @@
 </template>
 
 <script setup>
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCol, IonRow, IonGrid } from '@ionic/vue';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCol, IonRow, IonGrid, IonText, IonSpinner } from '@ionic/vue';
 import { onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentUser } from '../assets/api/user';
@@ -61,7 +61,7 @@ const page = ref(1);
 const perPage = ref(20);
 const maxPage = ref(2);
 const isMorePosts = computed(() => page.value < maxPage.value)
-const pending = ref(false);
+const pending = ref(true);
 
 onMounted(async () => {
     // get user info
@@ -77,6 +77,8 @@ async function getPostByPage() {
     try {
         let data = await getPostList(page.value, perPage.value);
         data = data.result;
+        page.value = data.page;
+        perPage.value = data.perPage;
         maxPage.value = Math.ceil(data.total / perPage.value);
         return data.data.filter(x => x.user_id === user.value._id);
     } finally {

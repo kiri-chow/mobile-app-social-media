@@ -99,7 +99,7 @@
 <script lang="js" setup>
 import {
   IonInput, IonButton, IonText, IonRadio, IonRadioGroup,
-  IonGrid, IonCol, IonRow,
+  IonGrid, IonCol, IonRow, IonItem,
   loadingController, alertController, IonLabel,
 } from '@ionic/vue';
 import { defineProps, onMounted, ref, computed, defineEmits } from 'vue';
@@ -112,6 +112,7 @@ const emits = defineEmits(["cancel"]);
 const router = useRouter();
 const props = defineProps({
   userData: Object,
+  isUpdate: Boolean,
 })
 const user = ref({
   username: '',
@@ -124,7 +125,6 @@ const user = ref({
 });
 const passwordConfirm = ref("");
 const isPasswordMismatch = computed(() => passwordConfirm.value ? passwordConfirm.value !== user.value.password : false)
-const isUpdate = computed(() => { return Boolean(user.value._id); });
 
 onMounted(() => {
   if (props.userData) {
@@ -145,11 +145,11 @@ function cancel() {
 // register & login
 async function submit() {
   const loading = await loadingController.create({
-    message: isUpdate.value ? "Updating..." : "Registering..."
+    message: props.isUpdate ? "Updating..." : "Registering..."
   });
   loading.present();
   try {
-    if (isUpdate.value) {
+    if (props.isUpdate) {
       await update();
       location.reload();
     } else {
@@ -207,7 +207,7 @@ async function login() {
   }
   // login success
   localStorage.setItem('token', data.token);
-  if ( isUpdate.value ){
+  if ( props.isUpdate ){
     location.reload();
   } else {
     router.push("/search")

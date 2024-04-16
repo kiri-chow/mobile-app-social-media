@@ -14,7 +14,7 @@ export async function getAllUsers(search=null, page=1, perPage=20) {
         `page=${page}`,
         `perPage=${perPage}`,
     ]);
-    return callApi(`/api/users?=${params}`);
+    return callApi(`/api/users?${params.join('&')}`);
 }
 
 export async function updateUser(id, data) {
