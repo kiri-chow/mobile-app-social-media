@@ -58,7 +58,7 @@
     <ion-alert :trigger="`delete-${post._id}`" header="Delete Post" message="Are you sure?" :buttons="deleteButtons"/>
 </template>
 <script setup>
-import { IonImg, IonIcon, IonCard, IonCardContent, IonAlert, toastController } from "@ionic/vue";
+import { IonImg, IonIcon, IonCard, IonCardContent, IonAlert, toastController, IonGrid, IonRow, IonCol, IonText } from "@ionic/vue";
 import { chatbubbleEllipses, pencil, trash, close } from 'ionicons/icons';
 import { defineProps, defineEmits, computed, ref } from "vue";
 import { deletePost } from "../assets/api/post";

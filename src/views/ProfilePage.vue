@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCol, IonRow } from '@ionic/vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentUser } from '../assets/api/user';
@@ -47,6 +47,7 @@ const postList = ref([])
 onMounted(async () => {
     // get userId
     user.value = await getCurrentUser();
+
     // get user's posts
     postList.value = await getPostListDescend();
 });

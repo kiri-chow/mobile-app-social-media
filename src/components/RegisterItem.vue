@@ -146,8 +146,8 @@ async function submit() {
       location.reload();
     } else {
       await register();
-      await login();
     }
+    await login();
   } catch (err) {
     showAlert(err.message);
   } finally {

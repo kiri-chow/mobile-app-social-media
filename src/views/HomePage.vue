@@ -34,9 +34,9 @@
 </template>
 
 <script setup>
+import { jwtDecode } from "jwt-decode";
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/vue';
 import { ref, inject, onMounted } from "vue";
-import { getCurrentUser } from '../assets/api/user';
 import { getPostListDescend } from '../assets/postList';
 import NewPostItem from '../components/NewPostItem.vue';
 import PostItem from '../components/PostItem.vue';
@@ -46,7 +46,9 @@ const postList = ref([]);
 
 onMounted(async () => {
   // get user info
-  user.value = await getCurrentUser();
+  const token = localStorage.getItem('token');
+  user.value = jwtDecode(token);
+
   // get post list
   updatePostList();
 })
