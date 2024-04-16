@@ -1,9 +1,12 @@
 import { callApi } from "./base";
 
 
-export async function getPostList(search) {
-    const params = search ? `?search=${search}` : '';
-    return callApi(`/api/posts/own${params}`);
+export async function getPostList(page=1, perPage=20) {
+    const params = [
+        `page=${page}`,
+        `perPage=${perPage}`,
+    ];
+    return callApi(`/api/posts/own?${params}`);
 }
 
 export async function createPost(data, id) {

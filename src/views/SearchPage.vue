@@ -1,9 +1,9 @@
-<script setup>
+<script setup lang="js">
 import {
   IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
   IonGrid, IonRow, IonCol, IonSearchbar
 } from '@ionic/vue';
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import userItem from '../components/userItem.vue';
 import { getFollowed, getAllUsers } from '../assets/api/user';
 import { popLoading } from '../assets/alerts';
@@ -12,24 +12,42 @@ import { popLoading } from '../assets/alerts';
 const followedId = ref(new Set());
 const userList = ref([]);
 const search = ref("");
+const page = ref(1);
+const perPage = ref(20);
+const maxPage = ref(2);
+const isMoreUsers = computed(() => page.value < maxPage.value)
+const pending = ref(false);
 
 
 onMounted(async () => {
-  const loading = await popLoading();
-  try {
-    // get followed id-s
-    const followed = await getFollowed();
-    followedId.value = new Set(followed.map(x => x.user_id));
+  // get followed id-s
+  const followed = await getFollowed();
+  followedId.value = new Set(followed.map(x => x.user_id));
 
-    // get user list
-    await searchUsers();
-  } finally {
-    loading.dismiss();
-  }
+  // get user list
+  reloadUserList();
 })
 
-async function searchUsers() {
-  userList.value = await getAllUsers(search.value);
+async function getUserByPage() {
+  pending.value = true;
+  try {
+    let data = await getAllUsers(search.value, page.value, perPage.value);
+    maxPage.value = Math.ceil(data.total / perPage.value);
+    return data.data;
+  } finally {
+    pending.value = false;
+  }
+}
+
+async function reloadUserList() {
+  userList.value = await getUserByPage();
+}
+
+async function loadMoreUser() {
+  if (isMoreUsers.value) {
+    page.value += 1;
+    userList.value = userList.value.concat(await getUserByPage());
+  }
 }
 
 function handleFollowing(id) {
@@ -83,6 +101,10 @@ function handleUnfollowing(id) {
           <ion-col size="12" size-md="6" size-lg="3" v-for="user in userList">
             <userItem :user="user" :followedId="followedId" @follow="handleFollowing" @unfollow="handleUnfollowing" />
           </ion-col>
+        </ion-row>
+        <ion-row class="end-of-list ion-justify-content-center" :disabled="pending || !isMoreUsers" @click="loadMoreUser">
+          <ion-spinner color='medium' v-if="pending"></ion-spinner>
+          <ion-text color="medium"> {{ isMoreUsers ? 'Click for more users!!' : 'All users loaded!!' }}</ion-text>
         </ion-row>
       </ion-grid>
     </ion-content>

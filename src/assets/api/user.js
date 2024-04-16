@@ -5,9 +5,16 @@ export async function getCurrentUser() {
     return callApi("/api/users/current");
 }
 
-export async function getAllUsers(search=null) {
-    const params = search ? `?search=${search}` : '';
-    return callApi(`/api/users${params}`);
+export async function getAllUsers(search=null, page=1, perPage=20) {
+    let params = []
+    if ( search ) {
+        params.push(`search=${search}`);
+    }
+    params = params.concat([
+        `page=${page}`,
+        `perPage=${perPage}`,
+    ]);
+    return callApi(`/api/users?=${params}`);
 }
 
 export async function updateUser(id, data) {

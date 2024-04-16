@@ -28,6 +28,9 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './assets/main.css';
 
+// apexchart
+import VueApexCharts from "vue3-apexcharts";
+
 addIcons({
   'logo-white': './assets/logo-white.svg',
   'logo': './assets/logo.svg'
@@ -35,7 +38,8 @@ addIcons({
 
 const app = createApp(App)
   .use(IonicVue)
-  .use(router);
+  .use(router)
+  .use(VueApexCharts);
   
 router.isReady().then(() => {
   app.mount('#app');

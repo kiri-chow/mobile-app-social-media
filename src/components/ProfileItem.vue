@@ -1,7 +1,7 @@
 <template>
     <ion-card>
         <ion-grid>
-            <ion-row>
+            <ion-row v-if="!isEditing">
                 <ion-col offset="1" size="auto">
                     <AvatarItem :user="user" size="large" />
                 </ion-col>
@@ -13,8 +13,8 @@
                             </ion-text>
                         </ion-col>
                         <ion-col class="ion-text-start">
-                            <ion-icon class="profile-control" role="button" :color="editing ? 'danger' : 'success'"
-                                :icon="createOutline" @click="editing = !editing"></ion-icon>
+                            <ion-icon class="profile-control" role="button" :color="isEditing ? 'danger' : 'success'"
+                                :icon="createOutline" @click="() => {isEditing = !isEditing}"></ion-icon>
                         </ion-col>
                         <ion-col class="ion-text-end">
                             <ion-icon id="logout" class="profile-control" role="button" color="danger"
@@ -35,11 +35,15 @@
                     </ion-row>
                 </ion-col>
             </ion-row>
+            <ion-row v-else>
+                <ion-col>
+                    <RegisterItem :userData="user" @cancel="()=>{isEditing = !isEditing}"/>
+                </ion-col>
+            </ion-row>
         </ion-grid>
-        <RegisterItem v-if="editing" :userData="user" />
     </ion-card>
 </template>
-<script setup>
+<script setup lang="js">
 import { IonText, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonAlert, IonItem } from "@ionic/vue";
 import { createOutline, exitOutline } from 'ionicons/icons';
 import { computed, defineProps, ref } from "vue";
@@ -51,7 +55,7 @@ const props = defineProps({
     user: Object,
     editable: Boolean,
 });
-const editing = ref(false);
+const isEditing = ref(false);
 const createdAt = computed(() => {
     return props.user.created_at ? props.user.created_at.split('T')[0] : "";
 });

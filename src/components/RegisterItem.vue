@@ -65,16 +65,18 @@
       <ion-row>
         <ion-col>
           <ion-item>
-            <ion-input id="password" v-model="user.password" label-placement="floating" type="password" :required="!isUpdate">
-              <div slot="label">Password <ion-text color="danger" :class="isUpdate? 'ion-hide' : ''">*</ion-text></div>
+            <ion-input id="password" v-model="user.password" label-placement="floating" type="password"
+              :required="!isUpdate">
+              <div slot="label">Password <ion-text color="danger" :class="isUpdate ? 'ion-hide' : ''">*</ion-text></div>
             </ion-input>
           </ion-item>
         </ion-col>
         <ion-col>
           <ion-item>
             <ion-input id="password-confirm" v-model="passwordConfirm" label-placement="floating" type="password"
-            :required="!isUpdate">
-              <div slot="label">Confirm Password <ion-text color="danger" :class="isUpdate? 'ion-hide' : ''">*</ion-text></div>
+              :required="!isUpdate">
+              <div slot="label">Confirm Password <ion-text color="danger" :class="isUpdate ? 'ion-hide' : ''">*</ion-text>
+              </div>
             </ion-input>
           </ion-item>
         </ion-col>
@@ -85,7 +87,7 @@
         </ion-col>
       </ion-row>
       <ion-row class="ion-justify-content-around">
-        <ion-button v-if="isUpdate" color="danger" @click="router.back()">Cancel</ion-button>
+        <ion-button v-if="isUpdate" color="danger" @click="cancel">Cancel</ion-button>
         <ion-button id="submit" type="submit" :disabled="isPasswordMismatch">
           {{ isUpdate ? "Update" : "Submit" }}
         </ion-button>
@@ -100,12 +102,13 @@ import {
   IonGrid, IonCol, IonRow,
   loadingController, alertController, IonLabel,
 } from '@ionic/vue';
-import { defineProps, onMounted, ref, computed } from 'vue';
+import { defineProps, onMounted, ref, computed, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 import AvatarItem from './AvatarItem.vue';
 import { updateUser } from '../assets/api/user';
 
 
+const emits = defineEmits(["cancel"]);
 const router = useRouter();
 const props = defineProps({
   userData: Object,
@@ -125,13 +128,18 @@ const isUpdate = computed(() => { return Boolean(user.value._id); });
 
 onMounted(() => {
   if (props.userData) {
-    user.value = {...props.userData};
+    user.value = { ...props.userData };
   }
 })
 
 const receiveNewIconUrl = (val) => {
   // get the new icon url
   user.value.icon = val || '';
+}
+
+// cancel register
+function cancel() {
+  emits('cancel', 1);
 }
 
 // register & login
@@ -199,6 +207,11 @@ async function login() {
   }
   // login success
   localStorage.setItem('token', data.token);
-  location.reload();
+  if ( isUpdate.value ){
+    location.reload();
+  } else {
+    router.push("/search")
+  }
+  
 }
 </script>

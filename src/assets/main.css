@@ -2,6 +2,11 @@
   background: #F1F2F8 !important;
 }
 
+ion-card h5 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 ion-toolbar img.logo {
   margin-left:10px;
   margin-right:10px;
@@ -15,4 +20,10 @@ ion-toolbar img.logo {
 
 #background-content {
   background: #F1F2F8 !important;
+}
+
+.end-of-list ion-text {
+  margin-left: 1px;
+  margin-top: auto;
+  margin-bottom: auto;
 }

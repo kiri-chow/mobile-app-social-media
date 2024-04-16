@@ -8,12 +8,14 @@
                 </ion-col>
                 <ion-col>
                     <!-- creator and time -->
-                    <ion-row class="ion-align-items-center">
+                    <ion-row :class="`ion-align-items-center post-title${size? '-' + size : ''}`">
                         <ion-col size="auto">
-                            <h4 class="ion-no-margin">{{ creator.username }}</h4>
+                            <ion-text color="primary">
+                                <h5 class="ion-no-margin">{{ creator.username }}</h5>
+                            </ion-text>
                         </ion-col>
                         <ion-col class="ion-text-start ion-align-items-center">
-                            <ion-text color="medium">{{ postTime }}</ion-text>
+                            <ion-text color="medium"><span>{{ postTime }}</span></ion-text>
                         </ion-col>
                     </ion-row>
                     <!-- post content -->
@@ -22,14 +24,14 @@
                             {{ post.content }}
                         </ion-card-content>
                     </ion-row>
-                    <ion-row>
+                    <ion-row v-if="post.image_url">
                         <ion-col>
-                            <ion-img v-if="post.image_url" :src="post.image_url" alt="post image" />
+                            <ion-img :src="post.image_url" alt="post image" />
                         </ion-col>
                     </ion-row>
                     <!-- control bar -->
-                    <ion-row class="ion-justify-content-between">
-                        <ion-col class="ion-text-start">
+                    <ion-row class="ion-justify-content-between post-control">
+                        <ion-col class="ion-text-start post-control">
                             <ion-text v-if="editable" :color="editing ? 'danger' : 'primary'" class="post-control"
                                 @click="editing = !editing">
                                 <ion-icon :icon="editing ? close : pencil"></ion-icon>
@@ -60,12 +62,12 @@
         <ion-grid class="replies" v-if="isShowingReplies">
             <ion-row class="form-section-start">
                 <ion-col>
-                    <NewPostItem :user="user" :postData="{ parent_id: post._id }" @newPost="updateReplies"/>
+                    <NewPostItem :user="user" :postData="{ parent_id: post._id }" @newPost="updateReplies" />
                 </ion-col>
             </ion-row>
             <ion-row v-for="reply in replies">
                 <ion-col>
-                    <PostItem :user="user" :post="reply" :dontShowText="true" />
+                    <PostItem :user="user" :post="reply" :dontShowText="true" size="small" />
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -89,6 +91,7 @@ const props = defineProps({
     user: Object,
     post: Object,
     dontShowText: Boolean,
+    size: String,
 });
 const creator = computed(() => {
     return props.post.user ? props.post.user[props.post.user.length - 1] : {};
@@ -178,6 +181,18 @@ const deleteButtons = [
 
 </script>
 <style>
+.post-title-small h5 {
+    font-size: medium;
+}
+
+.post-title-small span {
+    font-size: small;
+}
+
+.post-control {
+    margin-top: 0;
+}
+
 ion-icon.post-control {
     font-size: 1.2rem;
 }

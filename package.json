@@ -20,11 +20,13 @@
     "@ionic/vue": "^7.0.0",
     "@ionic/vue-router": "^7.0.0",
     "@popperjs/core": "^2.11.8",
+    "apexcharts": "^3.48.0",
     "bootstrap": "^5.3.3",
     "ionicons": "^7.0.0",
     "jwt-decode": "^4.0.0",
     "vue": "^3.3.0",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "vue3-apexcharts": "^1.5.2"
   },
   "devDependencies": {
     "@capacitor/cli": "5.7.4",

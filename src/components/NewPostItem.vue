@@ -12,8 +12,8 @@
                 <textarea v-model="post.content" class="form-control" :required="!post.image_url" :auto-grow="true"
                     placeholder="Say something..." fill="outline"></textarea>
                 <img v-if="post.image_url" :src="post.image_url" />
-                <ion-row class="ion-align-items-center ion-justify-content-between">
-                    <ion-text @click="uploadImage" :color="post.image_url ? 'danger' : ''" class="post-control"
+                <ion-row class="ion-align-items-center ion-justify-content-between new-post-control">
+                    <ion-text @click="uploadImage" :color="post.image_url ? 'danger' : ''" class="new-post-control"
                         role="button">
                         <ion-icon :icon="imageIcon" />
                         {{ imageText }}
@@ -121,11 +121,15 @@ ion-spinner {
     font-weight: bold;
 }
 
-.post-control {
+ion-row.new-post-control {
+    margin-top: 2px;
+}
+
+.new-post-control {
     font-size: 1rem;
 }
 
-.post-control ion-icon {
+.new-post-control ion-icon {
     font-size: 1.2rem;
     vertical-align: middle
 }
