@@ -1,5 +1,6 @@
 import { callApi } from "./base";
 
+
 export async function getCurrentUser() {
     return callApi("/api/users/current");
 }

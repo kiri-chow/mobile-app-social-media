@@ -3,16 +3,16 @@
         <!-- post meta -->
         <ion-grid>
             <ion-row>
-                <ion-col size="auto" class="ion-aligin-items-top">
+                <ion-col size="auto">
                     <avatar-item :user="creator" size="small" />
                 </ion-col>
                 <ion-col>
                     <!-- creator and time -->
-                    <ion-row class="ion-aligin-items-center">
+                    <ion-row class="ion-align-items-center">
                         <ion-col size="auto">
                             <h4 class="ion-no-margin">{{ creator.username }}</h4>
                         </ion-col>
-                        <ion-col class="ion-text-start ion-aligin-items-center">
+                        <ion-col class="ion-text-start ion-align-items-center">
                             <ion-text color="medium">{{ postTime }}</ion-text>
                         </ion-col>
                     </ion-row>
@@ -30,64 +30,115 @@
                     <!-- control bar -->
                     <ion-row class="ion-justify-content-between">
                         <ion-col class="ion-text-start">
-                            <ion-text color="primary" class="post-control">
-                                <ion-icon :icon="chatbubbleEllipses"></ion-icon>
-                                Reply
+                            <ion-text v-if="editable" :color="editing ? 'danger' : 'primary'" class="post-control"
+                                @click="editing = !editing">
+                                <ion-icon :icon="editing ? close : pencil"></ion-icon>
+                                {{ dontShowText ? "" : (editing ? "Cancel" : "Edit") }}
                             </ion-text>
                         </ion-col>
                         <ion-col class="ion-text-center">
-                            <ion-text v-if="editable" :color="editing?'danger':'primary'" class="post-control" 
-                             @click="editing = !editing">
-                            <ion-icon :icon="editing?close:pencil"></ion-icon>
-                            {{editing? "Cancel" : "Edit"}}
+                            <ion-text @click="toggleReplies" color="primary" class="post-control">
+                                <ion-icon :icon="replyIcon"></ion-icon>
+                                {{ `${dontShowText ? "" : "Reply "}(${replies.length})` }}
                             </ion-text>
                         </ion-col>
                         <ion-col class="ion-text-end">
-                            <ion-text v-if="editable" color="danger" :id="`delete-${post._id}`" class="post-control" >
+                            <ion-text v-if="editable" color="danger" :id="`delete-${post._id}`" class="post-control">
                                 <ion-icon :icon="trash"></ion-icon>
-                                Delete
+                                {{ dontShowText ? "" : "Delete" }}
                             </ion-text>
                         </ion-col>
                     </ion-row>
                 </ion-col>
             </ion-row>
+            <ion-row v-if="editing" class="form-section-start">
+                <ion-col>
+                    <NewPostItem :user="user" :editing="true" :postData="post" @newPost="updateContent" />
+                </ion-col>
+            </ion-row>
         </ion-grid>
-        <NewPostItem v-if="editing" :editing="true" :postData="post" @newPost="updateContent" />
+        <ion-grid class="replies" v-if="isShowingReplies">
+            <ion-row class="form-section-start">
+                <ion-col>
+                    <NewPostItem :user="user" :postData="{ parent_id: post._id }" @newPost="updateReplies"/>
+                </ion-col>
+            </ion-row>
+            <ion-row v-for="reply in replies">
+                <ion-col>
+                    <PostItem :user="user" :post="reply" :dontShowText="true" />
+                </ion-col>
+            </ion-row>
+        </ion-grid>
     </ion-card>
     <!-- alerts -->
-    <ion-alert :trigger="`delete-${post._id}`" header="Delete Post" message="Are you sure?" :buttons="deleteButtons"/>
+    <ion-alert v-if="editing" :trigger="`delete-${post._id}`" header="Delete Post" message="Are you sure?"
+        :buttons="deleteButtons" />
 </template>
 <script setup>
-import { IonImg, IonIcon, IonCard, IonCardContent, IonAlert, toastController, IonGrid, IonRow, IonCol, IonText } from "@ionic/vue";
-import { chatbubbleEllipses, pencil, trash, close } from 'ionicons/icons';
-import { defineProps, defineEmits, computed, ref } from "vue";
-import { deletePost } from "../assets/api/post";
+import { IonImg, IonIcon, IonCard, IonCardContent, IonAlert, IonGrid, IonRow, IonCol, IonText, IonItem } from "@ionic/vue";
+import { chatbubbleEllipses, pencil, trash, close, caretUp } from 'ionicons/icons';
+import { defineProps, defineEmits, computed, ref, onMounted, watch } from "vue";
+import { notice } from "../assets/alerts";
+import { deletePost, getReplyList } from "../assets/api/post";
 import AvatarItem from "./AvatarItem.vue";
 import NewPostItem from "./NewPostItem.vue";
 
-const props = defineProps({
-    userId: String,
-    post: Object,
-});
 
+
+const props = defineProps({
+    user: Object,
+    post: Object,
+    dontShowText: Boolean,
+});
 const creator = computed(() => {
     return props.post.user ? props.post.user[props.post.user.length - 1] : {};
 });
-
 const postTime = computed(() => {
     if (!props.post.created_at) {
         return null;
     } else {
         return (props.post.created_at === props.post.modified_at ?
-            props.post.created_at : `${props.post.modified_at} edited`
+            props.post.created_at : `edited at ${props.post.modified_at}`
         ).split('.')[0].replace('T', ' ');
     }
 })
-
 const editable = computed(() => {
-    return props.userId === props.post.user_id;
+    return props.user._id === props.post.user_id;
 })
 
+onMounted(async () => {
+    getReplies(props.post);
+})
+
+
+// replies
+const replies = ref([]);
+const isShowingReplies = ref(false);
+const replyIcon = computed(() => isShowingReplies.value ? caretUp : chatbubbleEllipses)
+
+function toggleReplies() {
+    isShowingReplies.value = !isShowingReplies.value;
+}
+
+async function getReplies(post) {
+    try {
+        const data = await getReplyList(post._id);
+        replies.value = data.replies;
+    } catch (err) {
+        notice(err.message);
+        console.error(err);
+    }
+}
+
+async function updateReplies(val) {
+    replies.value = [val].concat(replies.value);
+}
+
+watch(() => props.post, async (newValue, oldValue) => {
+    await getReplies(newValue);
+})
+
+// update the post
 const editing = ref(false);
 
 // post updated
@@ -95,17 +146,6 @@ const emit = defineEmits(['updatePost']);
 function updateContent(val) {
     editing.value = false;
     emit("updatePost", val);
-}
-
-
-// toast
-async function notice(message) {
-    const toast = await toastController.create({
-        message: message,
-        duration: 1500,
-        position: 'bottom',
-    });
-    await toast.present();
 }
 
 // delete a post
@@ -142,8 +182,17 @@ ion-icon.post-control {
     font-size: 1.2rem;
 }
 
+ion-card {
+    padding: 2px;
+}
+
 ion-card ion-card {
+    padding: 0px;
     border: 0;
     box-shadow: unset;
+}
+
+.form-section-start {
+    border-top: 1px solid var(--ion-color-light-shade);
 }
 </style>

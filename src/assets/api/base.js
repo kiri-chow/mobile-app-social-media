@@ -1,4 +1,9 @@
+import { jwtDecode } from "jwt-decode";
+
+
 const token = localStorage.getItem('token');
+
+export const userInfo = typeof (token) === 'string' ? jwtDecode(token) : {};
 
 export function logout() {
     localStorage.removeItem('token');
@@ -21,6 +26,8 @@ export async function callApi(url, method = "GET", data = null) {
     return fetch(url, request).then(async (response) => {
         if (response.ok) {
             return response.json();
+        } else if (response.status === 413) {
+            throw new Error("file too large!");
         } else {
             const json = await response.json();
             throw new Error(json.message);

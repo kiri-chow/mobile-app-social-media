@@ -111,6 +111,7 @@ http://ionicframework.com/docs/theming/ */
   --section-gap: 160px;
 
   --ion-item-background: var(--vt-c-white);
+  --ion-tab-bar-background: var(--vt-c-white);
 
   --ion-toolbar-color: var(--ion-color-dark-contrast);
   --ion-toolbar-background: var(--ion-color-dark);

@@ -40,9 +40,9 @@
     </ion-card>
 </template>
 <script setup>
-import { IonText, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonAlert } from "@ionic/vue";
+import { IonText, IonIcon, IonGrid, IonRow, IonCol, IonCard, IonAlert, IonItem } from "@ionic/vue";
 import { createOutline, exitOutline } from 'ionicons/icons';
-import { computed, defineProps, ref, onMounted } from "vue";
+import { computed, defineProps, ref } from "vue";
 import AvatarItem from './AvatarItem.vue';
 import RegisterItem from "./RegisterItem.vue";
 import { logout } from "../assets/api/base";
@@ -55,10 +55,6 @@ const editing = ref(false);
 const createdAt = computed(() => {
     return props.user.created_at ? props.user.created_at.split('T')[0] : "";
 });
-
-onMounted(() => {
-    
-})
 
 // logout
 const logoutButtons = [

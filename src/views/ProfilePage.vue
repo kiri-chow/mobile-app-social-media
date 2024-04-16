@@ -25,14 +25,24 @@
                     </ion-row>
                 </ion-toolbar>
             </ion-header>
-            <ProfileItem :user="user" :editable="true" />
-            <PostItem v-for="post in postList" :userId="user._id" :post="post" />
+            <ion-grid>
+                <ion-row>
+                    <ion-col>
+                        <ProfileItem :user="user" :editable="true" />
+                    </ion-col>
+                </ion-row>
+                <ion-row v-for="post in postList">
+                    <ion-col>
+                        <PostItem  :user="user" :post="post" />
+                    </ion-col>
+                </ion-row>
+            </ion-grid>
         </ion-content>
     </ion-page>
 </template>
 
 <script setup>
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCol, IonRow } from '@ionic/vue';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCol, IonRow, IonGrid } from '@ionic/vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentUser } from '../assets/api/user';
@@ -40,16 +50,17 @@ import { getPostListDescend } from '../assets/postList';
 import ProfileItem from '../components/ProfileItem.vue';
 import PostItem from '../components/PostItem.vue';
 
-const router = useRouter();
 const user = ref({});
 const postList = ref([])
 
 onMounted(async () => {
+    
     // get userId
     user.value = await getCurrentUser();
 
-    // get user's posts
-    postList.value = await getPostListDescend();
+    // get self's posts
+    const posts = await getPostListDescend();
+    postList.value = posts.filter(x => x.user_id === user.value._id);
 });
 </script>
 

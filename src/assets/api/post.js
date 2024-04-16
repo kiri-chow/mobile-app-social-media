@@ -1,5 +1,6 @@
 import { callApi } from "./base";
 
+
 export async function getPostList(search) {
     const params = search ? `?search=${search}` : '';
     return callApi(`/api/posts/own${params}`);

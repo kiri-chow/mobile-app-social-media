@@ -15,14 +15,14 @@
     </div>
 </template>
 <script setup>
-import { defineProps, onMounted, ref, defineEmits, computed } from "vue";
+import { defineProps, onMounted, ref, defineEmits, computed, watch } from "vue";
 import { IonAvatar, IonButton, IonIcon } from '@ionic/vue';
 import { closeCircle, arrowUpOutline } from "ionicons/icons"
 
 const props = defineProps({
     user: Object,
-    size: "small",
-    editable: false
+    size: String,
+    editable: Boolean,
 });
 const initials = computed(() => {
     if (props.user.username) {
@@ -34,10 +34,19 @@ const iconUrl = ref("");
 const fileInput = ref(null);
 const emit = defineEmits(['iconUrl']);
 
+
 onMounted(() => {
-    // set iconUrl
-    iconUrl.value = props.user.icon ? props.user.icon : "";
+    getIconUrl(props.user);
 })
+
+watch(() => props.user, (newValue, oldValue) => {
+    getIconUrl(newValue);
+})
+
+// set iconUrl
+function getIconUrl(user) {
+    iconUrl.value = user.icon ? user.icon : "";
+}
 
 // remove avatar
 function removeImage() {

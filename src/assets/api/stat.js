@@ -1,5 +1,6 @@
 import { callApi } from "./base";
 
+
 export async function getFollowerStats() {
     return callApi(`/api/stats/followers`);
 }

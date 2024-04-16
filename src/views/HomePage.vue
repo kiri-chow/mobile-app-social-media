@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-header :translucent="true">
-      <ion-toolbar >
+      <ion-toolbar>
         <ion-row>
           <ion-col size="auto">
             <img class="logo" src="@/assets/logo-white.svg" />
@@ -14,7 +14,7 @@
     </ion-header>
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
-        <ion-toolbar >
+        <ion-toolbar>
           <ion-row>
             <ion-col size="auto">
               <img class="logo" src="@/assets/logo-white.svg" />
@@ -25,29 +25,38 @@
           </ion-row>
         </ion-toolbar>
       </ion-header>
-      <div id="container">
-        <NewPostItem @newPost="updatePostList" />
-        <PostItem v-for="post in postList" :userId="user._id" :post="post" @updatePost="updateOnePost" />
-      </div>
+      <ion-grid>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="12" size-md="6" size-lg="4">
+            <NewPostItem @newPost="updatePostList" />
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-justify-content-center" v-for="post in postList">
+          <ion-col size="12" size-md="6" size-lg="4">
+            <PostItem :post="post" :user="user" @updatePost="updateOnePost" />
+          </ion-col>
+        </ion-row>
+      </ion-grid>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { jwtDecode } from "jwt-decode";
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/vue';
-import { ref, inject, onMounted } from "vue";
+import { IonGrid, IonRow, IonCol, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonIcon } from '@ionic/vue';
+import { ref, onMounted } from "vue";
 import { getPostListDescend } from '../assets/postList';
+import { getCurrentUser } from '../assets/api/user';
+import { popLoading } from '../assets/alerts';
 import NewPostItem from '../components/NewPostItem.vue';
 import PostItem from '../components/PostItem.vue';
+
 
 const user = ref({});
 const postList = ref([]);
 
 onMounted(async () => {
   // get user info
-  const token = localStorage.getItem('token');
-  user.value = jwtDecode(token);
+  user.value = await getCurrentUser();
 
   // get post list
   updatePostList();

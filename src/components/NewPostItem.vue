@@ -3,13 +3,13 @@
         <ion-card-header>
             <ion-text>
                 <h5 color='dark' class="card-title ion-no-margin">
-                    {{ editing ? "Update" : "New" }} Post
+                    {{ `${editing ? "Update" : "New"} ${post.parent_id ? "Reply" : "Post"}` }}
                 </h5>
             </ion-text>
         </ion-card-header>
         <ion-card-content>
             <form @submit.prevent="submitPost">
-                <textarea v-model="post.content" class="form-control" required :auto-grow="true"
+                <textarea v-model="post.content" class="form-control" :required="!post.image_url" :auto-grow="true"
                     placeholder="Say something..." fill="outline"></textarea>
                 <img v-if="post.image_url" :src="post.image_url" />
                 <ion-row class="ion-align-items-center ion-justify-content-between">
@@ -38,6 +38,7 @@ const emit = defineEmits(['newPost']);
 const props = defineProps({
     postData: Object,
     editing: Boolean,
+    user: Object,
 });
 const post = ref({
     content: "",
@@ -62,6 +63,10 @@ async function submitPost() {
         } else {
             data = await createPost(post.value, post.value.parent_id);
         }
+        post.value._id = data.id;
+        post.value.user = [props.user];
+        emit('newPost', post.value);
+        post.value = { content: '' };
     } catch (err) {
         print(err);
         const alert = await alertController.create({
@@ -69,10 +74,9 @@ async function submitPost() {
             buttons: ['OK'],
         })
         alert.present();
+    } finally {
+        posting.value = false;
     }
-
-    posting.value = false;
-    emit('newPost', post.value);
 }
 
 // upload image
@@ -103,8 +107,8 @@ function handleFileUpload(event) {
 <style>
 textarea.form-control {
     border-radius: 0.4rem;
-    border-style:solid;
-    border-color:var(--ion-color-medium);
+    border-style: solid;
+    border-color: var(--ion-color-medium);
     width: 100%;
     min-height: calc(1.5em + 0.75rem + calc(var(--bs-border-width) * 2));
 }

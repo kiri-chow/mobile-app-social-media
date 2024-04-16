@@ -1,15 +1,28 @@
 <template>
   <ion-page>
     <ion-header :translucent="true">
-      <ion-toolbar color="primary">
-        <ion-title>Stats</ion-title>
+      <ion-toolbar>
+        <ion-row>
+          <ion-col size="auto">
+            <img class="logo" src="@/assets/logo-white.svg" />
+          </ion-col>
+          <ion-col>
+            <ion-title>Stats</ion-title>
+          </ion-col>
+        </ion-row>
       </ion-toolbar>
     </ion-header>
-
     <ion-content :fullscreen="true">
       <ion-header collapse="condense">
-        <ion-toolbar color="primary">
-          <ion-title size="large">Stats</ion-title>
+        <ion-toolbar>
+          <ion-row>
+            <ion-col size="auto">
+              <img class="logo" src="@/assets/logo-white.svg" />
+            </ion-col>
+            <ion-col>
+              <ion-title>Stats</ion-title>
+            </ion-col>
+          </ion-row>
         </ion-toolbar>
       </ion-header>
       <div id="container">
@@ -28,5 +41,4 @@ import PostItem from '../components/PostItem.vue';
 
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
