@@ -8,14 +8,17 @@
                 </ion-col>
                 <ion-col>
                     <!-- creator and time -->
-                    <ion-row :class="`ion-align-items-center post-title${size? '-' + size : ''}`">
+                    <ion-row :class="`ion-align-items-center post-title${size ? '-' + size : ''}`">
                         <ion-col size="auto">
                             <ion-text color="primary">
                                 <h5 class="ion-no-margin">{{ creator.username }}</h5>
                             </ion-text>
                         </ion-col>
+                        <ion-col size="auto" v-if="isEdited">
+                            <ion-text color="medium">edited at</ion-text></ion-col>
                         <ion-col class="ion-text-start ion-align-items-center">
-                            <ion-text color="medium"><span>{{ postTime }}</span></ion-text>
+                            <ion-text color="medium"><span>{{ post.modified_at ? post.modified_at.split('.')[0].replace('T',
+                                ' ') : '' }}</span></ion-text>
                         </ion-col>
                     </ion-row>
                     <!-- post content -->
@@ -35,19 +38,19 @@
                             <ion-text v-if="editable" :color="editing ? 'danger' : 'primary'" class="post-control"
                                 @click="editing = !editing">
                                 <ion-icon :icon="editing ? close : pencil"></ion-icon>
-                                {{ dontShowText ? "" : (editing ? "Cancel" : "Edit") }}
+                                {{ isSubBox ? "" : (editing ? "Cancel" : "Edit") }}
                             </ion-text>
                         </ion-col>
                         <ion-col class="ion-text-center">
-                            <ion-text @click="toggleReplies" color="primary" class="post-control">
+                            <ion-text @click="toggleReplies" v-if="!isSubBox" color="primary" class="post-control">
                                 <ion-icon :icon="replyIcon"></ion-icon>
-                                {{ `${dontShowText ? "" : "Reply "}(${replies.length})` }}
+                                {{ `${isSubBox ? "" : "Reply "}(${replies.length})` }}
                             </ion-text>
                         </ion-col>
                         <ion-col class="ion-text-end">
-                            <ion-text v-if="editable" color="danger" :id="`delete-${post._id}`" class="post-control">
+                            <ion-text v-if="editable" color="danger" @click="triggerDelete" class="post-control">
                                 <ion-icon :icon="trash"></ion-icon>
-                                {{ dontShowText ? "" : "Delete" }}
+                                {{ isSubBox ? "" : "Delete" }}
                             </ion-text>
                         </ion-col>
                     </ion-row>
@@ -55,29 +58,27 @@
             </ion-row>
             <ion-row v-if="editing" class="form-section-start">
                 <ion-col>
-                    <NewPostItem :user="user" :editing="true" :postData="post" @newPost="updateContent" />
+                    <NewPostItem :user="user" :isSubBox="true" :editing="true" :postData="post" @newPost="updateContent" />
                 </ion-col>
             </ion-row>
         </ion-grid>
         <ion-grid class="replies" v-if="isShowingReplies">
             <ion-row class="form-section-start">
                 <ion-col>
-                    <NewPostItem :user="user" :postData="{ parent_id: post._id }" @newPost="updateReplies" />
+                    <NewPostItem :user="user" :isSubBox="true" :postData="{ parent_id: post._id }"
+                        @newPost="updateReplies" />
                 </ion-col>
             </ion-row>
             <ion-row v-for="reply in replies">
                 <ion-col>
-                    <PostItem :user="user" :post="reply" :dontShowText="true" size="small" />
+                    <PostItem :user="user" :post="reply" :isSubBox="true" size="small" @postDeleted="handleDeleteReply" />
                 </ion-col>
             </ion-row>
         </ion-grid>
     </ion-card>
-    <!-- alerts -->
-    <ion-alert v-if="editing" :trigger="`delete-${post._id}`" header="Delete Post" message="Are you sure?"
-        :buttons="deleteButtons" />
 </template>
 <script setup>
-import { IonImg, IonIcon, IonCard, IonCardContent, IonAlert, IonGrid, IonRow, IonCol, IonText, IonItem } from "@ionic/vue";
+import { IonImg, IonIcon, IonCard, IonCardContent, IonGrid, IonRow, IonCol, IonText, alertController } from "@ionic/vue";
 import { chatbubbleEllipses, pencil, trash, close, caretUp } from 'ionicons/icons';
 import { defineProps, defineEmits, computed, ref, onMounted, watch } from "vue";
 import { notice } from "../assets/alerts";
@@ -91,36 +92,35 @@ const isAdmin = userInfo.role === 'admin';
 const props = defineProps({
     user: Object,
     post: Object,
-    dontShowText: Boolean,
+    isSubBox: Boolean,
     size: String,
 });
 const creator = computed(() => {
     return props.post.user ? props.post.user[props.post.user.length - 1] : {};
 });
-const postTime = computed(() => {
-    if (!props.post.created_at) {
-        return null;
-    } else {
-        return (props.post.created_at === props.post.modified_at ?
-            props.post.created_at : `edited at ${props.post.modified_at}`
-        ).split('.')[0].replace('T', ' ');
-    }
-})
+const isEdited = computed(() => props.post.created_at !== props.post.modified_at);
+
 const editable = computed(() => {
     return props.user._id === props.post.user_id || isAdmin;
 })
 
 onMounted(async () => {
-    getReplies(props.post);
+    // getReplies(props.post);
+    replies.value = props.post.replies;
 })
 
 
 // replies
+let isRepliesGot = false;
 const replies = ref([]);
 const isShowingReplies = ref(false);
 const replyIcon = computed(() => isShowingReplies.value ? caretUp : chatbubbleEllipses)
 
-function toggleReplies() {
+async function toggleReplies() {
+    if (!isRepliesGot) {
+        await getReplies(props.post);
+        isRepliesGot = true;
+    }
     isShowingReplies.value = !isShowingReplies.value;
 }
 
@@ -146,7 +146,7 @@ watch(() => props.post, async (newValue, oldValue) => {
 const editing = ref(false);
 
 // post updated
-const emit = defineEmits(['updatePost']);
+const emit = defineEmits(['updatePost', 'postDeleted']);
 function updateContent(val) {
     editing.value = false;
     emit("updatePost", val);
@@ -159,6 +159,7 @@ async function handleDelete() {
     try {
         await deletePost(props.post._id);
         notice("Post deleted.");
+        emit('postDeleted', props.post);
         hidden.value = true;
     } catch (err) {
         notice(err.message);
@@ -166,19 +167,31 @@ async function handleDelete() {
     }
 }
 
-const deleteButtons = [
-    {
-        text: 'Cancel',
-        role: 'cancel',
-    },
-    {
-        text: 'OK',
-        role: 'confirm',
-        handler: async () => {
-            handleDelete();
-        },
-    },
-];
+function handleDeleteReply(val) {
+    replies.value = replies.value.filter((x) => x._id !== val._id);
+}
+
+
+async function triggerDelete() {
+    const alert = await alertController.create({
+        header: "Warning",
+        message: "Do you want to delete the post?",
+        buttons: [
+            {
+                text: 'Cancel',
+                role: 'cancel',
+            },
+            {
+                text: 'OK',
+                role: 'confirm',
+                handler: async () => {
+                    handleDelete();
+                },
+            },
+        ]
+    });
+    alert.present();
+}
 
 </script>
 <style>

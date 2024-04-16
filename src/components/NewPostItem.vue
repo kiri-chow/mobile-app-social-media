@@ -1,10 +1,22 @@
 <template>
     <ion-card>
         <ion-card-header>
+            <ion-row>
+                <ion-col>
+                    <h5 color='dark' class="card-title ion-no-margin">
+                        {{ `${editing ? "Update" : "New"} ${post.parent_id ? "Reply" : "Post"}` }}
+                    </h5>
+                </ion-col>
+                <ion-col class="new-post-control" size="auto">
+                    <ion-row>
+                        <ion-spinner color="warning" v-if="emojiPending"></ion-spinner>
+                        <ion-text v-else role="button" color="warning" @click="suggestEmoji">
+                            <ion-icon :icon="sparkles"></ion-icon>
+                            {{ isSubBox ? '' : 'Emoji Sugg' }}</ion-text>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
             <ion-text>
-                <h5 color='dark' class="card-title ion-no-margin">
-                    {{ `${editing ? "Update" : "New"} ${post.parent_id ? "Reply" : "Post"}` }}
-                </h5>
             </ion-text>
         </ion-card-header>
         <ion-card-content>
@@ -16,7 +28,7 @@
                     <ion-text @click="uploadImage" :color="post.image_url ? 'danger' : ''" class="new-post-control"
                         role="button">
                         <ion-icon :icon="imageIcon" />
-                        {{ imageText }}
+                        {{ isSubBox ? '' : imageText }}
                     </ion-text>
                     <input type="file" ref="fileInput" accept="image/*" class="ion-hide" @change="handleFileUpload" />
                     <ion-button type="submit">
@@ -29,8 +41,8 @@
     </ion-card>
 </template>
 <script setup>
-import { IonIcon, IonCard, IonCardContent, IonSpinner, IonRow, IonText, IonCardHeader, IonButton, alertController } from "@ionic/vue";
-import { cloudUploadOutline, closeOutline } from 'ionicons/icons';
+import { IonIcon, IonCard, IonCardContent, IonSpinner, IonRow, IonText, IonCardHeader, IonButton, alertController, IonCol } from "@ionic/vue";
+import { cloudUploadOutline, closeOutline, sparkles } from 'ionicons/icons';
 import { defineProps, computed, ref, defineEmits, onMounted } from "vue";
 import { createPost, updatePost } from "../assets/api/post";
 
@@ -38,6 +50,7 @@ const emit = defineEmits(['newPost']);
 const props = defineProps({
     postData: Object,
     editing: Boolean,
+    isSubBox: Boolean,
     user: Object,
 });
 const post = ref({
@@ -102,6 +115,22 @@ function handleFileUpload(event) {
     }
 }
 
+// emoji suggestion
+const emojiPending = ref(false);
+
+async function suggestEmoji() {
+    if (post.value.content) {
+        emojiPending.value = true;
+        try {
+            const res = await fetch(`/api/posts/emoji?content=${post.value.content}&size=1`);
+            const json = await res.json();
+            const emoji = json.emoji[0];
+            post.value.content = `${post.value.content}${emoji}`;
+        } finally {
+            emojiPending.value = false;
+        }
+    }
+}
 
 </script>
 <style>
@@ -114,7 +143,7 @@ textarea.form-control {
 }
 
 ion-spinner {
-    margin-right: 0.8rem;
+    margin-right: 1rem;
 }
 
 .card-title {
@@ -127,6 +156,10 @@ ion-row.new-post-control {
 
 .new-post-control {
     font-size: 1rem;
+}
+
+.new-post-control ion-text {
+    margin-left: 1px;
 }
 
 .new-post-control ion-icon {
