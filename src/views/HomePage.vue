@@ -2,7 +2,7 @@
   <ion-page>
     <ion-header :translucent="true">
       <ion-toolbar>
-        <ion-title>Blank</ion-title>
+        <ion-title>Home</ion-title>
       </ion-toolbar>
     </ion-header>
 
@@ -21,8 +21,9 @@
   </ion-page>
 </template>
 
-<script setup >
+<script setup>
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue';
+
 </script>
 
 <style scoped>
