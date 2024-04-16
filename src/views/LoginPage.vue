@@ -1,15 +1,29 @@
 <template>
     <ion-page>
         <ion-header :translucent="true">
-            <ion-toolbar color="primary">
-                <ion-title>Login</ion-title>
+            <ion-toolbar >
+              <ion-row>
+                <ion-col size="auto">
+                  <img class="logo" src="@/assets/logo-white.svg" />
+                </ion-col>
+                <ion-col>
+                  <ion-title>Login</ion-title>
+                </ion-col>
+              </ion-row>
             </ion-toolbar>
-        </ion-header>
-        <ion-content :fullscreen="true">
+          </ion-header>
+          <ion-content :fullscreen="true">
             <ion-header collapse="condense">
-                <ion-toolbar color="primary">
-                    <ion-title size="large">Login</ion-title>
-                </ion-toolbar>
+              <ion-toolbar >
+                <ion-row>
+                  <ion-col size="auto">
+                    <img class="logo" src="@/assets/logo-white.svg" />
+                  </ion-col>
+                  <ion-col>
+                    <ion-title>Login</ion-title>
+                  </ion-col>
+                </ion-row>
+              </ion-toolbar>
             </ion-header>
             <div id="container">
                 <img src="@/assets/logo.svg" alt="Logo" width="50" height="50" />
@@ -30,7 +44,7 @@
   
 <script setup >
 import { IonContent, IonHeader, IonPage, IonTitle,
-    IonToolbar, IonSegment, IonSegmentButton,
+    IonToolbar, IonSegment, IonSegmentButton, IonLabel,
  } from '@ionic/vue';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';

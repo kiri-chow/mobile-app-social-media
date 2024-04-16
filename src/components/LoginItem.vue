@@ -16,7 +16,7 @@
 
 <script lang="js" setup>
 import { IonInput, IonItem, IonButton, IonText, loadingController, alertController } from '@ionic/vue';
-import { onMounted, ref, computed } from 'vue';
+import { ref, inject } from 'vue';
 
 const loginData = ref({
   username: '',

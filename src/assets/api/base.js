@@ -15,10 +15,9 @@ export async function callApi(url, method = "GET", data = null) {
     if (["PUT", "POST"].includes(method)) {
         request.headers['Content-Type'] = 'application/json';
         if (data) {
-            request.json = JSON.stringify(data);
+            request.body = JSON.stringify(data);
         }
     }
-    console.log(request);
     return fetch(url, request).then(async (response) => {
         if (response.ok) {
             return response.json();

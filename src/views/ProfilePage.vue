@@ -1,19 +1,32 @@
 <template>
     <ion-page>
         <ion-header :translucent="true">
-            <ion-toolbar>
-                <ion-title>Profile</ion-title>
+            <ion-toolbar >
+                <ion-row>
+                    <ion-col size="auto">
+                        <img class="logo" src="@/assets/logo-white.svg" />
+                    </ion-col>
+                    <ion-col>
+                        <ion-title>Profile</ion-title>
+                    </ion-col>
+                </ion-row>
             </ion-toolbar>
         </ion-header>
-
         <ion-content :fullscreen="true">
             <ion-header collapse="condense">
-                <ion-toolbar>
-                    <ion-title size="large">Profile</ion-title>
+                <ion-toolbar >
+                    <ion-row>
+                        <ion-col size="auto">
+                            <img class="logo" src="@/assets/logo-white.svg" />
+                        </ion-col>
+                        <ion-col>
+                            <ion-title>Profile</ion-title>
+                        </ion-col>
+                    </ion-row>
                 </ion-toolbar>
             </ion-header>
             <ProfileItem :user="user" :editable="true" />
-            <PostItem v-for="post in postList" :userId="user._id" :post="post"/>
+            <PostItem v-for="post in postList" :userId="user._id" :post="post" />
         </ion-content>
     </ion-page>
 </template>
@@ -23,7 +36,7 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/vue
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentUser } from '../assets/api/user';
-import { getPostList } from '../assets/api/post';
+import { getPostListDescend } from '../assets/postList';
 import ProfileItem from '../components/ProfileItem.vue';
 import PostItem from '../components/PostItem.vue';
 
@@ -35,8 +48,7 @@ onMounted(async () => {
     // get userId
     user.value = await getCurrentUser();
     // get user's posts
-    const posts = await getPostList();
-    postList.value = posts.posts
+    postList.value = await getPostListDescend();
 });
 </script>
 

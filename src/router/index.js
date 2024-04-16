@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from '@ionic/vue-router';
 import HomePage from '../views/HomePage.vue';
 import NavTabItem from '../components/NavTabItem.vue';
 
+
+
 const routes = [
   {
     path: '/',
@@ -13,24 +15,42 @@ const routes = [
     children: [
       {
         path: 'home',
-        component: HomePage
+        component: () => {
+          if (localStorage.getItem('token')) {
+            return HomePage;
+          } else {
+            return import('../views/LoginPage.vue');
+          }
+        }
       },
       {
         path: 'search',
-        component: () => {import("../views/SearchPage.vue");}
+        component: () => {
+          if (localStorage.getItem('token')) {
+            return import('../views/SearchPage.vue');
+          } else {
+            return import('../views/LoginPage.vue');
+          }
+        }
       },
       {
         path: 'stats',
-        component: () => {import("../views/StatsPage.vue");}
+        component: () => {
+          if (localStorage.getItem('token')) {
+            return import('../views/StatsPage.vue');
+          } else {
+            return import('../views/LoginPage.vue');
+          }
+        }
       },
       {
         path: 'profile',
         component: () => {
-          if ( localStorage.getItem('token') ) {
+          if (localStorage.getItem('token')) {
             return import('../views/ProfilePage.vue');
           } else {
             return import('../views/LoginPage.vue')
-          }  
+          }
         }
       },
     ]

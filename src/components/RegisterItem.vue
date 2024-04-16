@@ -98,7 +98,7 @@
 import {
   IonInput, IonButton, IonText, IonRadio, IonRadioGroup,
   IonGrid, IonCol, IonRow,
-  loadingController, alertController
+  loadingController, alertController, IonLabel,
 } from '@ionic/vue';
 import { defineProps, onMounted, ref, computed } from 'vue';
 import { useRouter } from 'vue-router';

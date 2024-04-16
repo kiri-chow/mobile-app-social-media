@@ -76,7 +76,7 @@ http://ionicframework.com/docs/theming/ */
 
 :root {
   --vt-c-white: #ffffff;
-  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-soft: #F1F2F8;
   --vt-c-white-mute: #f2f2f2;
 
   --vt-c-black: #181818;
@@ -98,7 +98,7 @@ http://ionicframework.com/docs/theming/ */
 
 /* semantic color variables for this project */
 :root {
-  --ion-background-color: var(--vt-c-white);
+  --ion-background-color: var(--vt-c-white-soft);
   --ion-background-color-soft: var(--vt-c-white-soft);
   --ion-background-color-mute: var(--vt-c-white-mute);
 
@@ -109,6 +109,11 @@ http://ionicframework.com/docs/theming/ */
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+
+  --ion-item-background: var(--vt-c-white);
+
+  --ion-toolbar-color: var(--ion-color-dark-contrast);
+  --ion-toolbar-background: var(--ion-color-dark);
 }
 
 @media (prefers-color-scheme: dark) {

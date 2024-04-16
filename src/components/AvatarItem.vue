@@ -68,7 +68,7 @@ function handleFileUpload(event) {
 
 <style>
 .avatar {
-    background-color: gray;
+    background-color: var(--ion-color-medium-tint);
 }
 
 .avatar .a-init {

@@ -1,0 +1,18 @@
+#ion-app {
+  background: #F1F2F8 !important;
+}
+
+ion-toolbar img.logo {
+  margin-left:10px;
+  margin-right:10px;
+  width: 2rem;
+}
+
+.title-default {
+  font-size: 1.5rem;
+  padding-inline-start: 0px !important;
+}
+
+#background-content {
+  background: #F1F2F8 !important;
+}
