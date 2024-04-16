@@ -100,7 +100,7 @@ async function reloadPostList() {
 }
 
 async function loadMorePost() {
-  if (isMorePosts.value) {
+  if (!pending && isMorePosts.value) {
     page.value += 1;
     postList.value = postList.value.concat(await getPostByPage());
   }

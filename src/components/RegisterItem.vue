@@ -17,7 +17,7 @@
         </ion-col>
         <ion-col size="auto" class="ion-justify-content-center">
           <!-- avatar -->
-          <AvatarItem size="large" :user="user" @iconUrl="receiveNewIconUrl" :editable="isUpdate" />
+          <AvatarItem size="large" :user="user" @iconUrl="receiveNewIconUrl" :editable="true" />
         </ion-col>
       </ion-row>
       <!-- names -->
@@ -210,7 +210,7 @@ async function login() {
   if ( props.isUpdate ){
     location.reload();
   } else {
-    router.push("/search")
+    router.push("/home")
   }
   
 }

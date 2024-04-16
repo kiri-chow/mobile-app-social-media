@@ -45,7 +45,7 @@ async function reloadUserList() {
 }
 
 async function loadMoreUser() {
-  if (isMoreUsers.value) {
+  if (!pending && isMoreUsers.value) {
     page.value += 1;
     userList.value = userList.value.concat(await getUserByPage());
   }
