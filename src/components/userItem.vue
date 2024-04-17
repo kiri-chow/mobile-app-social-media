@@ -9,7 +9,8 @@ import AvatarItem from './AvatarItem.vue';
 
 
 const isAdmin = ref(userInfo.role === 'admin');
-const pending = ref(false);
+const pendingDelete = ref(false);
+const pendingFollow = ref(false);
 const props = defineProps({
     user: Object,
     isFollowed: Boolean,
@@ -31,7 +32,7 @@ const emit = defineEmits(['follow', 'unfolllow']);
 // follow or unfollow
 async function followOrUnfollow() {
     const id = props.user._id;
-    pending.value = true;
+    pendingFollow.value = true;
     try {
         if (buttonType.value === 1) {
             await followUser(id);
@@ -44,7 +45,7 @@ async function followOrUnfollow() {
         popAlert(err.message);
         console.error(err);
     } finally {
-        pending.value = false;
+        pendingFollow.value = false;
     }
 }
 
@@ -66,7 +67,7 @@ async function alertDelete() {
 }
 
 async function removeOneUser() {
-    pending.value = true;
+    pendingDelete.value = true;
     try {
         const data = await deleteUser(props.user._id);
         isDeleted.value = true;
@@ -74,7 +75,7 @@ async function removeOneUser() {
         popAlert(err.message);
         console.error(err);
     } finally {
-        pending.value = false;
+        pendingDelete.value = false;
     }
 }
 </script>
@@ -92,15 +93,15 @@ async function removeOneUser() {
                 <ion-text v-if="isFollower" color="medium"><p class="notes">Following You</p></ion-text>
             </ion-col>
             <ion-col v-if='isAdmin && buttonType !== 0' size='auto'>
-                <ion-button @click="alertDelete" color="danger" :disabled="pending">
-                    <ion-spinner class="btn-icon" v-if="pending"></ion-spinner>
+                <ion-button @click="alertDelete" color="danger" :disabled="pendingDelete">
+                    <ion-spinner class="btn-icon" v-if="pendingDelete"></ion-spinner>
                     <ion-icon class="btn-icon" v-else :icon="trash"></ion-icon>
                 </ion-button>
             </ion-col>
             <ion-col size='auto'>
                 <ion-button @click="followOrUnfollow" v-if="buttonType !== 0"
-                    :color="buttonType === 1 ? 'primary' : 'danger'" :disabled="pending">
-                    <ion-spinner class="btn-icon" v-if="pending"></ion-spinner>
+                    :color="buttonType === 1 ? 'primary' : 'danger'" :disabled="pendingFollow">
+                    <ion-spinner class="btn-icon" v-if="pendingFollow"></ion-spinner>
                     <ion-icon class="btn-icon" v-else :icon="buttonType === 1 ? personAdd : personRemove"></ion-icon>
                 </ion-button>
             </ion-col>
