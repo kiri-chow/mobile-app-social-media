@@ -93,8 +93,8 @@ import { userInfo } from "../assets/api/base";
 
 const isAdmin = userInfo.role === 'admin';
 const props = defineProps({
-    user: Object,
-    post: Object,
+    user: { type: Object, default: {} },
+    post: { type: Object, default: {} },
     isSubBox:
     {
         type: Boolean,
@@ -106,7 +106,8 @@ const props = defineProps({
     },
 });
 const creator = computed(() => {
-    return props.post.user ? props.post.user[props.post.user.length - 1] : {};
+    const toReturn = props.post.user ? props.post.user[props.post.user.length - 1] : null;
+    return toReturn ? toReturn : {};
 });
 const isEdited = computed(() => props.post.created_at !== props.post.modified_at);
 
@@ -127,6 +128,7 @@ const isShowingReplies = ref(false);
 const replyIcon = computed(() => isShowingReplies.value ? caretUp : chatbubbleEllipses)
 
 let togglePending = false;
+
 async function toggleReplies() {
     if (!togglePending) {
         togglePending = true;
@@ -183,14 +185,20 @@ function updateContent(val) {
 // delete a post
 const hidden = ref(false);
 
+let isDeleting = false;
 async function handleDelete() {
-    try {
-        await deletePost(props.post._id);
-        notice("Post deleted.");
-        emit('postDeleted', props.post);
-    } catch (err) {
-        notice(err.message);
-        console.error(err);
+    if (!isDeleting) {
+        isDeleting = true;
+        try {
+            await deletePost(props.post._id);
+            notice("Post deleted.");
+            emit('postDeleted', props.post);
+        } catch (err) {
+            notice(err.message);
+            console.error(err);
+        } finally {
+            isDeleting = false;
+        }
     }
 }
 
@@ -200,26 +208,29 @@ function handleDeleteReply(val) {
 
 
 async function triggerDelete() {
-    const alert = await alertController.create({
-        header: "Warning",
-        message: "Do you want to delete the post?",
-        buttons: [
-            {
-                text: 'Cancel',
-                role: 'cancel',
-            },
-            {
-                text: 'OK',
-                role: 'confirm',
-                handler: async () => {
-                    handleDelete();
+    if (!isDeleting) {
+        const alert = await alertController.create({
+            header: "Warning",
+            message: "Do you want to delete the post?",
+            buttons: [
+                {
+                    text: 'Cancel',
+                    role: 'cancel',
                 },
-            },
-        ]
-    });
-    alert.present();
+                {
+                    text: 'OK',
+                    role: 'confirm',
+                    handler: async () => {
+                        handleDelete();
+                    },
+                },
+            ]
+        });
+        alert.present();
+    } else {
+        notice("The post is deleting...");
+    }
 }
-
 </script>
 <style>
 .post-title-small h5 {
@@ -250,4 +261,5 @@ ion-card ion-card {
 
 .form-section-start {
     border-top: 1px solid var(--ion-color-light-shade);
-}</style>
+}
+</style>

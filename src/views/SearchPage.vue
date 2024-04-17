@@ -4,7 +4,7 @@ import {
 } from '@ionic/vue';
 import { ref, onMounted, computed } from "vue";
 import userItem from '../components/userItem.vue';
-import { getFollowed, getAllUsers, getFollowings } from '../assets/api/user';
+import { getFollowedSet, getAllUsers, getFollowerSet } from '../assets/api/user';
 import ToolbarItem from '../components/ToolbarItem.vue';
 
 
@@ -21,12 +21,10 @@ const pending = ref(true);
 
 onMounted(async () => {
   // get followed id-s
-  const followed = await getFollowed();
-  followedId.value = new Set(followed.map(x => x.user_id));
+  followedId.value = await getFollowedSet();
 
   // get following id-s
-  const followings = await getFollowings();
-  followingsId.value = new Set(followings.map(x => x.follower_id));
+  followingsId.value = await getFollowerSet();
 
   // get user list
   reloadUserList();

@@ -44,3 +44,13 @@ export async function getFollowed() {
 export async function getFollowings() {
     return callApi(`/api/users/followings`);
 }
+
+export async function getFollowerSet() {
+    const data = await getFollowings();
+    return new Set(data.map(x => x.follower_id));
+}
+
+export async function getFollowedSet() {
+    const data = await getFollowed();
+    return new Set(data.map(x => x.user_id));
+}

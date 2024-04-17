@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ToolbarItem name="Home"/>
+    <ToolbarItem name="Home" />
     <ion-content :fullscreen="true">
       <ion-grid>
         <ion-row class="ion-justify-content-center">
@@ -10,10 +10,10 @@
         </ion-row>
         <ion-row class="ion-justify-content-center" v-for="post in postList">
           <ion-col size="12" size-md="6" size-lg="4">
-            <PostItem :post="post" :user="user" @updatePost="updateOnePost" />
+            <PostItem :post="post" :user="user" @updatePost="updateOnePost" @postDeleted="handleDelete" />
           </ion-col>
         </ion-row>
-        <ion-row class="end-of-list ion-justify-content-center" :disabled="pending || !isMorePosts" @click="loadMorePost" >
+        <ion-row class="end-of-list ion-justify-content-center" :disabled="pending || !isMorePosts" @click="loadMorePost">
           <ion-spinner color='medium' v-if="pending"></ion-spinner>
           <ion-text color="medium"> {{ isMorePosts ? 'Click for more posts!!' : 'All posts loaded!!' }}</ion-text>
         </ion-row>
@@ -21,7 +21,6 @@
     </ion-content>
   </ion-page>
 </template>
-
 <script setup lang="js">
 import { IonGrid, IonRow, IonCol, IonText, IonContent, IonPage, IonSpinner } from '@ionic/vue';
 import { ref, onMounted, computed } from "vue";
@@ -58,6 +57,10 @@ onMounted(async () => {
   reloadPostList();
 })
 
+
+function handleDelete(val) {
+  postList.value = postList.value.filter((x) => x._id !== val._id);
+}
 
 async function getPostByPage() {
   pending.value = true;

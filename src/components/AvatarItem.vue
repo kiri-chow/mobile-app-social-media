@@ -23,7 +23,10 @@ import { IonAvatar, IonRow, IonCol, IonIcon } from '@ionic/vue';
 import { closeCircle, arrowUpOutline } from "ionicons/icons"
 
 const props = defineProps({
-    user: Object,
+    user: {
+        type: Object,
+        default: {}
+    },
     size: {
         type: String,
         default: "small"
