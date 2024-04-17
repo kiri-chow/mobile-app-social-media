@@ -16,7 +16,7 @@
                 <ion-row class="end-of-list ion-justify-content-center" :disabled="pending || !isMorePosts"
                     @click="loadMorePost">
                     <ion-spinner color='medium' v-if="pending"></ion-spinner>
-                    <ion-text color="medium"> {{ isMorePosts ? 'Click for more posts!!' : 'All posts loaded!!' }}</ion-text>
+                    <ion-text role="button" @click="loadMorePost" color="medium"> {{ isMorePosts ? 'Click for more posts!!' : 'All posts loaded!!' }}</ion-text>
                 </ion-row>
             </ion-grid>
         </ion-content>
@@ -68,7 +68,7 @@ async function reloadPostList() {
 }
 
 async function loadMorePost() {
-    if (!pending && isMorePosts.value) {
+    if (!pending.value && isMorePosts.value) {
         page.value += 1;
         postList.value = postList.value.concat(await getPostByPage());
     }

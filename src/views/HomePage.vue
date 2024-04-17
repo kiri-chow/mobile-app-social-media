@@ -5,7 +5,7 @@
       <ion-grid>
         <ion-row class="ion-justify-content-center">
           <ion-col size="12" size-md="6" size-lg="4">
-            <NewPostItem @newPost="reloadPostList" />
+            <NewPostItem @newPost="reloadPostList" :user="user" />
           </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center" v-for="post in postList">
@@ -13,7 +13,7 @@
             <PostItem :post="post" :user="user" @updatePost="updateOnePost" />
           </ion-col>
         </ion-row>
-        <ion-row class="end-of-list ion-justify-content-center" :disabled="pending || !isMorePosts" @click="loadMorePost">
+        <ion-row class="end-of-list ion-justify-content-center" :disabled="pending || !isMorePosts" @click="loadMorePost" >
           <ion-spinner color='medium' v-if="pending"></ion-spinner>
           <ion-text color="medium"> {{ isMorePosts ? 'Click for more posts!!' : 'All posts loaded!!' }}</ion-text>
         </ion-row>
@@ -78,7 +78,7 @@ async function reloadPostList() {
 }
 
 async function loadMorePost() {
-  if (!pending && isMorePosts.value) {
+  if (!pending.value && isMorePosts.value) {
     page.value += 1;
     postList.value = postList.value.concat(await getPostByPage());
   }

@@ -4,7 +4,7 @@
             <ion-row>
                 <ion-col>
                     <h5 color='dark' class="card-title ion-no-margin">
-                        {{ `${editing ? "Update" : "New"} ${post.parent_id ? "Reply" : "Post"}` }}
+                        {{ `${isEditing ? "Update" : "New"} ${post.parent_id ? "Reply" : "Post"}` }}
                     </h5>
                 </ion-col>
                 <ion-col class="new-post-control" size="auto">
@@ -33,7 +33,7 @@
                     <input type="file" ref="fileInput" accept="image/*" class="ion-hide" @change="handleFileUpload" />
                     <ion-button type="submit">
                         <ion-spinner class="ion-text-start" v-if="posting"></ion-spinner>
-                        {{ editing ? "Update" : "Submit" }}
+                        {{ isEditing ? "Update" : "Submit" }}
                     </ion-button>
                 </ion-row>
             </form>
@@ -49,8 +49,14 @@ import { createPost, updatePost } from "../assets/api/post";
 const emit = defineEmits(['newPost']);
 const props = defineProps({
     postData: Object,
-    editing: Boolean,
-    isSubBox: Boolean,
+    isEditing: {
+        type: Boolean,
+        default: false,
+    },
+    isSubBox: {
+        type: Boolean,
+        default: false,
+    },
     user: Object,
 });
 const post = ref({
@@ -71,7 +77,7 @@ async function submitPost() {
     posting.value = true;
     let data
     try {
-        if (props.editing) {
+        if (props.isEditing) {
             data = await updatePost(post.value._id, post.value);
         } else {
             data = await createPost(post.value, post.value.parent_id);
@@ -86,7 +92,7 @@ async function submitPost() {
         emit('newPost', post.value);
         post.value = { content: '' };
     } catch (err) {
-        print(err);
+        console.error(err);
         const alert = await alertController.create({
             message: err.message,
             buttons: ['OK'],
