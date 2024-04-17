@@ -32,7 +32,7 @@
                     </ion-text>
                     <input type="file" ref="fileInput" accept="image/*" class="ion-hide" @change="handleFileUpload" />
                     <ion-button type="submit">
-                        <ion-spinner class="ion-text-start" v-if="posting"></ion-spinner>
+                        <ion-spinner class="ion-text-start" v-if="isPending"></ion-spinner>
                         {{ isEditing ? "Update" : "Submit" }}
                     </ion-button>
                 </ion-row>
@@ -65,19 +65,19 @@ const props = defineProps({
 const post = ref({
     content: "",
 });
-const posting = ref(false);
+const isPending = ref(false);
 const imageIcon = computed(() => post.value.image_url ? closeOutline : cloudUploadOutline);
 const imageText = computed(() => `${post.value.image_url ? 'Remove' : 'Upload'} Image`);
 
 onMounted(() => {
     if (props.postData) {
-        Object.assign(post.value, props.postData);
+        post.value = {...post.value, ...props.postData};
     }
 });
 
 // submit post
 async function submitPost() {
-    posting.value = true;
+    isPending.value = true;
     let data
     try {
         if (props.isEditing) {
@@ -92,8 +92,11 @@ async function submitPost() {
         post.value.user = [props.user];
         post.value.user_id = props.user._id;
 
-        emit('newPost', post.value);
-        post.value = { content: '' };
+        emit('newPost', {...post.value});
+
+        // clean up
+        post.value.content = '';
+        delete post.value._id;
     } catch (err) {
         console.error(err);
         const alert = await alertController.create({
@@ -102,7 +105,7 @@ async function submitPost() {
         })
         alert.present();
     } finally {
-        posting.value = false;
+        isPending.value = false;
     }
 }
 
