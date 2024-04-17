@@ -35,10 +35,10 @@
                     <!-- control bar -->
                     <ion-row class="ion-justify-content-between post-control">
                         <ion-col size="auto" class="ion-text-start post-control">
-                            <ion-text v-if="editable" :color="editing ? 'danger' : 'primary'" class="post-control"
-                                @click="editing = !editing">
-                                <ion-icon :icon="editing ? close : pencil"></ion-icon>
-                                {{ isSubBox ? "" : (editing ? "Cancel" : "Edit") }}
+                            <ion-text v-if="editable" :color="isEditing ? 'danger' : 'primary'" class="post-control"
+                                @click="isEditing = !isEditing">
+                                <ion-icon :icon="isEditing ? close : pencil"></ion-icon>
+                                {{ isSubBox ? "" : (isEditing ? "Cancel" : "Edit") }}
                             </ion-text>
                         </ion-col>
                         <ion-col class="ion-text-center">
@@ -56,9 +56,10 @@
                     </ion-row>
                 </ion-col>
             </ion-row>
-            <ion-row v-if="editing" class="form-section-start">
+            <ion-row v-if="isEditing" class="form-section-start">
                 <ion-col>
-                    <NewPostItem :user="user" :isSubBox="true" :editing="true" :postData="post" @newPost="updateContent" />
+                    <NewPostItem :user="user" :isSubBox="true" :isEditing="true" :postData="post"
+                        @newPost="updateContent" />
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -94,8 +95,15 @@ const isAdmin = userInfo.role === 'admin';
 const props = defineProps({
     user: Object,
     post: Object,
-    isSubBox: Boolean,
-    size: String,
+    isSubBox:
+    {
+        type: Boolean,
+        default: false
+    },
+    size: {
+        type: String,
+        default: ""
+    },
 });
 const creator = computed(() => {
     return props.post.user ? props.post.user[props.post.user.length - 1] : {};
@@ -162,13 +170,13 @@ watch(() => props.post, async (newValue, oldValue) => {
 })
 
 // update the post
-const editing = ref(false);
+const isEditing = ref(false);
 
 // post updated
 const emit = defineEmits(['updatePost', 'postDeleted']);
 
 function updateContent(val) {
-    editing.value = false;
+    isEditing.value = false;
     emit("updatePost", val);
 }
 
@@ -243,5 +251,4 @@ ion-card ion-card {
 
 .form-section-start {
     border-top: 1px solid var(--ion-color-light-shade);
-}
-</style>
+}</style>

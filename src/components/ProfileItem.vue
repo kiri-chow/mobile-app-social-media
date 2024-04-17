@@ -38,7 +38,7 @@
             </ion-row>
             <ion-row v-else>
                 <ion-col>
-                    <RegisterItem :userData="user" :isUpdate="true" @cancel="()=>{isEditing = !isEditing}"/>
+                    <RegisterItem :userData="user" :isUpdate="true" @cancel="() => { isEditing = !isEditing }" />
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -55,7 +55,7 @@ import { logout } from "../assets/api/base";
 
 const props = defineProps({
     user: Object,
-    editable: Boolean,
+    editable: { type: Boolean, default: false },
 });
 const isEditing = ref(false);
 const createdAt = computed(() => {

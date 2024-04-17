@@ -86,7 +86,8 @@
 
 <script lang="js" setup>
 import {
-  IonInput, IonButton, IonText, IonSelect, IonSelectOption, IonGrid, IonCol, IonRow, IonItem, loadingController } from '@ionic/vue';
+  IonInput, IonButton, IonText, IonSelect, IonSelectOption, IonGrid, IonCol, IonRow, IonItem, loadingController
+} from '@ionic/vue';
 import { defineProps, onMounted, ref, computed, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 import AvatarItem from './AvatarItem.vue';
@@ -98,7 +99,7 @@ const emits = defineEmits(["cancel"]);
 const router = useRouter();
 const props = defineProps({
   userData: Object,
-  isUpdate: Boolean,
+  isUpdate: { type: Boolean, default: false },
 })
 const user = ref({
   username: '',

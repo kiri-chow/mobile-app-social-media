@@ -1,13 +1,14 @@
 <template>
     <div>
-        <ion-icon v-if="editable && iconUrl" class="a-del-btn" color="danger" role="img" :icon="closeCircle" @click="removeImage" />
+        <ion-icon v-if="editable && iconUrl" class="a-del-btn" color="danger" role="img" :icon="closeCircle"
+            @click="removeImage" />
         <ion-avatar class="avatar" :class="`a-${size}`">
             <div v-if="editable" class="hover-layer">
                 <ion-icon color="primary" :icon="arrowUpOutline" @click="uploadImage"></ion-icon>
                 <input type="file" ref="fileInput" accept="image/*" class="ion-hide" @change="handleFileUpload" />
             </div>
             <img v-if="iconUrl" alt="avatar" :src="iconUrl" />
-            <ion-row  v-else>
+            <ion-row v-else>
                 <ion-col class="a-init" :class="`a-${size}`">
                     {{ initials }}
                 </ion-col>
@@ -23,8 +24,14 @@ import { closeCircle, arrowUpOutline } from "ionicons/icons"
 
 const props = defineProps({
     user: Object,
-    size: String,
-    editable: Boolean,
+    size: {
+        type: String,
+        default: "small"
+    },
+    editable: {
+        type: Boolean,
+        default: false
+    },
 });
 const initials = computed(() => {
     if (props.user.username) {
@@ -131,5 +138,4 @@ function handleFileUpload(event) {
 
 .hover-layer:hover {
     opacity: 0.7;
-}
-</style>
+}</style>
