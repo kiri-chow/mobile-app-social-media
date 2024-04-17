@@ -77,8 +77,6 @@ const setChartData = (labels, seriesValue, total) => {
             }
         },
         yaxis: {
-            min: 0,
-            stepSize: 1,
             labels: {
                 formatter: function (value) {
                     return parseInt(value).toString();
