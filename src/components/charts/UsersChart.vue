@@ -3,7 +3,7 @@
         <ion-card-header>
             <h5>Users Trends</h5>
         </ion-card-header>
-        <ion-card-content>
+        <ion-card-content class="chart-line">
             <apexchart type="line" :options="options" :series="series" />
         </ion-card-content>
     </ion-card>
@@ -52,21 +52,29 @@ const setChartData = (labels, seriesValue, total) => {
             toolbar: {
                 show: false
             },
+            height: "100%"
         },
         stroke: {
-            curve: 'smooth'
+            curve: 'smooth',
+            width: 2,
         },
         subtitle: {
             text: "Users: " + total,
             align: 'center',
-            margin: 50,
             style: {
                 color: '#222',
-                fontSize: '24px',
+                fontSize: '1rem',
             }
         },
         xaxis: {
             categories: labels,
+            type: 'datetime',   
+            tickAmount: 10,
+            labels: {
+                style: {
+                    fontSize: '0.8rem',
+                }
+            }
         },
         yaxis: {
             min: 0,

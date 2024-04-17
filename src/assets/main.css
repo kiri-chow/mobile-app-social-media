@@ -2,6 +2,10 @@
   background: #F1F2F8 !important;
 }
 
+ion-card-content.chart-line {
+  min-height: 8cm;
+}
+
 ion-row ion-card {
   margin-top: 2px;
   margin-bottom: 3px;

@@ -3,7 +3,7 @@
         <ion-card-header>
             <h5>Users Gender Distribution</h5>
         </ion-card-header>
-        <ion-card-content>
+        <ion-card-content class="chart-pie">
             <apexchart type="polarArea" :options="options" :series="series" />
         </ion-card-content>
     </ion-card>
@@ -22,10 +22,8 @@
   });
 
   const loadAsyncData = () => {
-    // console.log("get gender data");
     getUserGenderStats()
       .then((result) => {
-        // console.log("gender", result);
         let labels = result.map(item => item._id);
         let seriesValue = result.map(item => item.count);
         setChartData(labels, seriesValue);
@@ -45,6 +43,7 @@
         toolbar: {
           show: false
         },
+        height: "100%"
       },
       labels: labels,
       stroke: {
@@ -69,7 +68,6 @@
         },
       },
       yaxis: {
-        // tickAmount: 1,
         labels: {
           formatter: function (val) {
             return val.toFixed(0);
