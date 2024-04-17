@@ -1,0 +1,13 @@
+{
+    "name": "Group K",
+    "start_url": "/",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "@/assets/logo.svg",
+        "sizes": "72x72",
+        "purpose": "maskable"
+      }
+    ]
+  }
+  
