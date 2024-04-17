@@ -1,11 +1,11 @@
 <script setup lang="js">
 import {
-  IonContent, IonHeader, IonPage, IonTitle, IonToolbar,
-  IonGrid, IonRow, IonCol, IonSearchbar, IonText, IonSpinner,
+  IonContent, IonPage, IonGrid, IonRow, IonCol, IonSearchbar, IonText, IonSpinner,
 } from '@ionic/vue';
 import { ref, onMounted, computed } from "vue";
 import userItem from '../components/userItem.vue';
 import { getFollowed, getAllUsers } from '../assets/api/user';
+import ToolbarItem from '../components/ToolbarItem.vue';
 
 
 const followedId = ref(new Set());
@@ -67,34 +67,11 @@ function handleUnfollowing(id) {
 </style>
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-row>
-          <ion-col size="auto">
-            <img class="logo" src="@/assets/logo-white.svg" />
-          </ion-col>
-          <ion-col>
-            <ion-title>Search</ion-title>
-          </ion-col>
-        </ion-row>
-      </ion-toolbar>
-    </ion-header>
+    <ToolbarItem name="Search" />
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-row>
-            <ion-col size="auto">
-              <img class="logo" src="@/assets/logo-white.svg" />
-            </ion-col>
-            <ion-col>
-              <ion-title>Search</ion-title>
-            </ion-col>
-          </ion-row>
-        </ion-toolbar>
-      </ion-header>
       <ion-grid>
-        <ion-row>
-          <ion-col>
+        <ion-row class="ion-justify-content-center">
+          <ion-col size="12" size-md="6">
             <ion-searchbar v-model="search" @change="reloadUserList" placeholder="Search user..."></ion-searchbar>
           </ion-col>
         </ion-row>

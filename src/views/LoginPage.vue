@@ -1,30 +1,7 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-row>
-          <ion-col size="auto">
-            <img class="logo" src="@/assets/logo-white.svg" />
-          </ion-col>
-          <ion-col>
-            <ion-title>Incredible Network</ion-title>
-          </ion-col>
-        </ion-row>
-      </ion-toolbar>
-    </ion-header>
+    <ToolbarItem name="Login"/>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-row>
-            <ion-col size="auto">
-              <img class="logo" src="@/assets/logo-white.svg" />
-            </ion-col>
-            <ion-col>
-              <ion-title>Incredible Network</ion-title>
-            </ion-col>
-          </ion-row>
-        </ion-toolbar>
-      </ion-header>
       <ion-card id="container">
           <img src="@/assets/logo.svg" alt="Logo" width="60" height="60" />
           <ion-card-header>
@@ -54,11 +31,9 @@
     </ion-content>
   </ion-page>
 </template>
-  
 <script setup >
 import {
-  IonContent, IonHeader, IonPage, IonTitle,
-  IonToolbar, IonSegment, IonSegmentButton, IonLabel,
+  IonContent, IonPage, IonSegment, IonSegmentButton, IonLabel,
   IonGrid, IonRow, IonCol, IonCard, IonCardHeader,
   IonText,
 } from '@ionic/vue';
@@ -66,6 +41,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import RegisterItem from '../components/RegisterItem.vue';
 import LoginItem from '../components/LoginItem.vue';
+import ToolbarItem from '../components/ToolbarItem.vue';
 
 const currentSegment = ref('login');
 

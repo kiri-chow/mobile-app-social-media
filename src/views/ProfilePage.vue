@@ -1,33 +1,10 @@
 <template>
     <ion-page>
-        <ion-header :translucent="true">
-            <ion-toolbar>
-                <ion-row>
-                    <ion-col size="auto">
-                        <img class="logo" src="@/assets/logo-white.svg" />
-                    </ion-col>
-                    <ion-col>
-                        <ion-title>Profile</ion-title>
-                    </ion-col>
-                </ion-row>
-            </ion-toolbar>
-        </ion-header>
+        <ToolbarItem name="Profile"/>
         <ion-content :fullscreen="true">
-            <ion-header collapse="condense">
-                <ion-toolbar>
-                    <ion-row>
-                        <ion-col size="auto">
-                            <img class="logo" src="@/assets/logo-white.svg" />
-                        </ion-col>
-                        <ion-col>
-                            <ion-title>Profile</ion-title>
-                        </ion-col>
-                    </ion-row>
-                </ion-toolbar>
-            </ion-header>
             <ion-grid>
-                <ion-row>
-                    <ion-col>
+                <ion-row class="ion-justify-content-center">
+                    <ion-col size="12" size-md="6" size-lg="4">
                         <ProfileItem :user="user" :editable="true" />
                     </ion-col>
                 </ion-row>
@@ -45,15 +22,15 @@
         </ion-content>
     </ion-page>
 </template>
-
 <script setup>
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonCol, IonRow, IonGrid, IonText, IonSpinner } from '@ionic/vue';
+import { IonContent, IonPage, IonCol, IonRow, IonGrid, IonText, IonSpinner } from '@ionic/vue';
 import { onMounted, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { getCurrentUser } from '../assets/api/user';
 import { getPostList } from '../assets/api/post';
 import ProfileItem from '../components/ProfileItem.vue';
 import PostItem from '../components/PostItem.vue';
+import ToolbarItem from '../components/ToolbarItem.vue';
+
 
 const user = ref({});
 const postList = ref([]);
@@ -99,6 +76,8 @@ async function loadMorePost() {
 
 function updateOnePost(post) {
     const thePost = postList.value.filter((x) => x._id == post._id)[0];
+    console.log(post);
+    console.log(postList);
     if (thePost) {
         Object.assign(thePost, post);
     }

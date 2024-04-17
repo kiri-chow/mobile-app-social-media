@@ -2,6 +2,11 @@
   background: #F1F2F8 !important;
 }
 
+ion-row ion-card {
+  margin-top: 2px;
+  margin-bottom: 3px;
+}
+
 ion-card h5 {
   margin-top: 0;
   margin-bottom: 0;

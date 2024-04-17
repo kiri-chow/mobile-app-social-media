@@ -76,7 +76,9 @@ async function submitPost() {
         } else {
             data = await createPost(post.value, post.value.parent_id);
         }
-        post.value._id = data.id;
+        if (data.id) {
+            post.value._id;
+        }
         post.value.user = [props.user];
         emit('newPost', post.value);
         post.value = { content: '' };

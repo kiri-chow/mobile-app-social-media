@@ -11,6 +11,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { getUserStats } from "../../assets/api/stats";
+import { IonCard, IonCardContent, IonCardHeader } from "@ionic/vue";
 
 const options = ref({});
 const series = ref([]);

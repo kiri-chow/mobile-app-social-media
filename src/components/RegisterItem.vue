@@ -39,25 +39,13 @@
       </ion-row>
       <ion-row>
         <ion-col>
-          <ion-row>
-            <ion-item lines="none">
-              <ion-label>Gender<ion-text color="danger">*</ion-text></ion-label>
-            </ion-item>
-          </ion-row>
           <ion-item lines="inset">
-            <ion-radio-group v-model="user.gender">
-              <ion-row>
-                <ion-col class="ion-justify-content-start">
-                  <ion-radio value="Male" label-placement="end">Male</ion-radio>
-                </ion-col>
-                <ion-col>
-                  <ion-radio value="Female" label-placement="end">Female</ion-radio>
-                </ion-col>
-                <ion-col class="ion-justify-content-end">
-                  <ion-radio value="Others" label-placement="end">Others</ion-radio>
-                </ion-col>
-              </ion-row>
-            </ion-radio-group>
+            <ion-select placeholder="Your gender" v-model="user.gender">
+              <div slot="label">Gender<ion-text color="danger">*</ion-text></div>
+              <ion-select-option value="Male">Male</ion-select-option>
+              <ion-select-option value="Female">Female</ion-select-option>
+              <ion-select-option value="Others">Others</ion-select-option>
+            </ion-select>
           </ion-item>
         </ion-col>
       </ion-row>
@@ -98,14 +86,12 @@
 
 <script lang="js" setup>
 import {
-  IonInput, IonButton, IonText, IonRadio, IonRadioGroup,
-  IonGrid, IonCol, IonRow, IonItem,
-  loadingController, alertController, IonLabel,
-} from '@ionic/vue';
+  IonInput, IonButton, IonText, IonSelect, IonSelectOption, IonGrid, IonCol, IonRow, IonItem, loadingController } from '@ionic/vue';
 import { defineProps, onMounted, ref, computed, defineEmits } from 'vue';
 import { useRouter } from 'vue-router';
 import AvatarItem from './AvatarItem.vue';
 import { updateUser } from '../assets/api/user';
+import { notice } from '../assets/alerts';
 
 
 const emits = defineEmits(["cancel"]);
@@ -163,19 +149,11 @@ async function submit() {
   }
 }
 
-// alert user
-async function showAlert(message) {
-  const alert = await alertController.create({
-    message: message,
-    buttons: ['OK'],
-  });
-  await alert.present();
-}
 
 // update
 async function update() {
   await updateUser(user.value._id, user.value);
-  showAlert("You're profile is updated");
+  notice("You're profile is updated");
 }
 
 // register
@@ -187,7 +165,7 @@ async function register() {
     throw new Error(data.message);
   }
   // register success
-  await showAlert('Successed! You are now logging in!');
+  notice('Successed! You are now logging in!');
 }
 
 // login
@@ -207,11 +185,11 @@ async function login() {
   }
   // login success
   localStorage.setItem('token', data.token);
-  if ( props.isUpdate ){
+  if (props.isUpdate) {
     location.reload();
   } else {
     router.push("/home")
   }
-  
+
 }
 </script>

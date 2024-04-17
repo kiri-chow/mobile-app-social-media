@@ -1,30 +1,7 @@
 <template>
   <ion-page>
-    <ion-header :translucent="true">
-      <ion-toolbar>
-        <ion-row>
-          <ion-col size="auto">
-            <img class="logo" src="@/assets/logo-white.svg" />
-          </ion-col>
-          <ion-col>
-            <ion-title>Home</ion-title>
-          </ion-col>
-        </ion-row>
-      </ion-toolbar>
-    </ion-header>
+    <ToolbarItem name="Home"/>
     <ion-content :fullscreen="true">
-      <ion-header collapse="condense">
-        <ion-toolbar>
-          <ion-row>
-            <ion-col size="auto">
-              <img class="logo" src="@/assets/logo-white.svg" />
-            </ion-col>
-            <ion-col>
-              <ion-title>Home</ion-title>
-            </ion-col>
-          </ion-row>
-        </ion-toolbar>
-      </ion-header>
       <ion-grid>
         <ion-row class="ion-justify-content-center">
           <ion-col size="12" size-md="6" size-lg="4">
@@ -46,10 +23,11 @@
 </template>
 
 <script setup lang="js">
-import { IonGrid, IonRow, IonCol, IonText, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonSpinner } from '@ionic/vue';
+import { IonGrid, IonRow, IonCol, IonText, IonContent, IonPage, IonSpinner } from '@ionic/vue';
 import { ref, onMounted, computed } from "vue";
 import { getPostList } from '../assets/api/post';
 import { getCurrentUser } from '../assets/api/user';
+import ToolbarItem from '../components/ToolbarItem.vue';
 import NewPostItem from '../components/NewPostItem.vue';
 import PostItem from '../components/PostItem.vue';
 import { useRouter } from 'vue-router';

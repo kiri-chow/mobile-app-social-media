@@ -34,7 +34,7 @@
                     </ion-row>
                     <!-- control bar -->
                     <ion-row class="ion-justify-content-between post-control">
-                        <ion-col class="ion-text-start post-control">
+                        <ion-col size="auto" class="ion-text-start post-control">
                             <ion-text v-if="editable" :color="editing ? 'danger' : 'primary'" class="post-control"
                                 @click="editing = !editing">
                                 <ion-icon :icon="editing ? close : pencil"></ion-icon>
@@ -47,7 +47,7 @@
                                 {{ `${isSubBox ? "" : "Reply "}(${replies.length})` }}
                             </ion-text>
                         </ion-col>
-                        <ion-col class="ion-text-end">
+                        <ion-col size="auto" class="ion-text-end">
                             <ion-text v-if="editable" color="danger" @click="triggerDelete" class="post-control">
                                 <ion-icon :icon="trash"></ion-icon>
                                 {{ isSubBox ? "" : "Delete" }}
@@ -71,7 +71,7 @@
             </ion-row>
             <ion-row v-for="reply in replies">
                 <ion-col>
-                    <PostItem :user="user" :post="reply" :isSubBox="true" size="small" @postDeleted="handleDeleteReply" />
+                    <PostItem :user="user" :post="reply" :isSubBox="true" size="small" @postDeleted="handleDeleteReply" @updatePost="updateOneReply" />
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -116,12 +116,22 @@ const replies = ref([]);
 const isShowingReplies = ref(false);
 const replyIcon = computed(() => isShowingReplies.value ? caretUp : chatbubbleEllipses)
 
+let togglePending = false;
 async function toggleReplies() {
-    if (!isRepliesGot) {
-        await getReplies(props.post);
-        isRepliesGot = true;
+    if (!togglePending) {
+        togglePending = true;
+        try {
+            if (!isRepliesGot) {
+                await getReplies(props.post);
+                isRepliesGot = true;
+            }
+            isShowingReplies.value = !isShowingReplies.value;
+        } finally {
+            togglePending = false;
+        }
+    } else {
+        notice("Loading Replies...");
     }
-    isShowingReplies.value = !isShowingReplies.value;
 }
 
 async function getReplies(post) {
@@ -136,6 +146,13 @@ async function getReplies(post) {
 
 async function updateReplies(val) {
     replies.value = [val].concat(replies.value);
+}
+
+function updateOneReply(post) {
+  const thePost = replies.value.filter((x) => x._id == post._id)[0];
+  if (thePost) {
+    Object.assign(thePost, post);
+  }
 }
 
 watch(() => props.post, async (newValue, oldValue) => {

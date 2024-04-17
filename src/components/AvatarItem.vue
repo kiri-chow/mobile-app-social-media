@@ -7,9 +7,11 @@
                 <input type="file" ref="fileInput" accept="image/*" class="ion-hide" @change="handleFileUpload" />
             </div>
             <img v-if="iconUrl" alt="avatar" :src="iconUrl" />
-            <div class="a-init" v-else>
-                {{ initials }}
-            </div>
+            <ion-row  v-else>
+                <ion-col class="a-init" :class="`a-${size}`">
+                    {{ initials }}
+                </ion-col>
+            </ion-row>
         </ion-avatar>
 
     </div>
@@ -83,10 +85,6 @@ function handleFileUpload(event) {
 .avatar .a-init {
     color: #ffffff;
     text-align: center;
-    position: absolute;
-    top: 50%;
-    transform: translate(0, -50%);
-    width: 90%;
 }
 
 .avatar.a-small {
