@@ -188,7 +188,6 @@ async function handleDelete() {
         await deletePost(props.post._id);
         notice("Post deleted.");
         emit('postDeleted', props.post);
-        hidden.value = true;
     } catch (err) {
         notice(err.message);
         console.error(err);
