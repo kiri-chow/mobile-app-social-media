@@ -3,18 +3,19 @@
         <ion-toolbar ref="toolbar">
             <ion-row class="ion-justify-content-center">
                 <ion-col size="auto">
-                    <img class="logo" src="@/assets/logo-white.svg" />
+                    <img class="logo" src="@/assets/logo-white.svg" id="about-us" />
                 </ion-col>
                 <ion-col>
                     <ion-title class="header-name">{{ name }}</ion-title>
                 </ion-col>
             </ion-row>
         </ion-toolbar>
+        <ion-alert trigger="about-us" header="About Group K" :buttons="['OK']" :inputs="groupMembers" />
     </ion-header>
 </template>
 <script setup>
 import { ref, onMounted } from 'vue';
-import { IonHeader, IonToolbar, IonRow, IonCol, IonTitle, createGesture } from '@ionic/vue';
+import { IonHeader, IonToolbar, IonRow, IonCol, IonTitle, createGesture, IonAlert } from '@ionic/vue';
 
 
 const toolbar = ref();
@@ -42,6 +43,7 @@ onMounted(() => {
     gesture.enable();
 });
 
+// double click for reload
 function onStart() {
     const now = Date.now();
 
@@ -53,4 +55,19 @@ function onStart() {
         lastOnStart = now;
     }
 };
+
+const groupMembers = [
+    {
+        value: 'Kwok Pui Hei - Web',
+        disabled: true,
+    },
+    {
+        value: 'Zhou Huisheng - Mobile',
+        disabled: true,
+    },
+    {
+        value: 'Lam Wai Hung - Backend',
+        disabled: true,
+    }
+]
 </script>
