@@ -62,6 +62,7 @@
                 </ion-col>
             </ion-row>
         </ion-grid>
+        <!-- replies -->
         <ion-grid class="replies" v-if="isShowingReplies">
             <ion-row class="form-section-start">
                 <ion-col>
@@ -71,7 +72,8 @@
             </ion-row>
             <ion-row v-for="reply in replies">
                 <ion-col>
-                    <PostItem :user="user" :post="reply" :isSubBox="true" size="small" @postDeleted="handleDeleteReply" @updatePost="updateOneReply" />
+                    <PostItem :user="user" :post="reply" :isSubBox="true" size="small" @postDeleted="handleDeleteReply"
+                        @updatePost="updateOneReply" />
                 </ion-col>
             </ion-row>
         </ion-grid>
@@ -79,7 +81,7 @@
 </template>
 <script setup>
 import { IonImg, IonIcon, IonCard, IonCardContent, IonGrid, IonRow, IonCol, IonText, alertController } from "@ionic/vue";
-import { chatbubbleEllipses, pencil, trash, close, caretUp } from 'ionicons/icons';
+import { chatbubbleEllipses, pencil, trash, close, caretUp, chevronCollapseOutline } from 'ionicons/icons';
 import { defineProps, defineEmits, computed, ref, onMounted, watch } from "vue";
 import { notice } from "../assets/alerts";
 import { deletePost, getReplyList } from "../assets/api/post";
@@ -149,10 +151,10 @@ async function updateReplies(val) {
 }
 
 function updateOneReply(post) {
-  const thePost = replies.value.filter((x) => x._id == post._id)[0];
-  if (thePost) {
-    Object.assign(thePost, post);
-  }
+    const thePost = replies.value.filter((x) => x._id == post._id)[0];
+    if (thePost) {
+        Object.assign(thePost, post);
+    }
 }
 
 watch(() => props.post, async (newValue, oldValue) => {
@@ -164,6 +166,7 @@ const editing = ref(false);
 
 // post updated
 const emit = defineEmits(['updatePost', 'postDeleted']);
+
 function updateContent(val) {
     editing.value = false;
     emit("updatePost", val);

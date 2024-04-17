@@ -4,10 +4,11 @@ import {
 } from '@ionic/vue';
 import { ref, onMounted, computed } from "vue";
 import userItem from '../components/userItem.vue';
-import { getFollowed, getAllUsers } from '../assets/api/user';
+import { getFollowed, getAllUsers, getFollowings } from '../assets/api/user';
 import ToolbarItem from '../components/ToolbarItem.vue';
 
 
+const followingsId = ref(new Set());
 const followedId = ref(new Set());
 const userList = ref([]);
 const search = ref("");
@@ -22,6 +23,10 @@ onMounted(async () => {
   // get followed id-s
   const followed = await getFollowed();
   followedId.value = new Set(followed.map(x => x.user_id));
+
+  // get following id-s
+  const followings = await getFollowings();
+  followingsId.value = new Set(followings.map(x => x.follower_id));
 
   // get user list
   reloadUserList();
@@ -77,7 +82,7 @@ function handleUnfollowing(id) {
         </ion-row>
         <ion-row>
           <ion-col size="12" size-md="6" size-lg="3" v-for="user in userList">
-            <userItem :user="user" :followedId="followedId" @follow="handleFollowing" @unfollow="handleUnfollowing" />
+            <userItem :user="user" :isFollowed="followedId.has(user._id)" :isFollower="followingsId.has(user._id)" @follow="handleFollowing" @unfollow="handleUnfollowing" />
           </ion-col>
         </ion-row>
         <ion-row class="end-of-list ion-justify-content-center" :disabled="pending || !isMoreUsers" @click="loadMoreUser">

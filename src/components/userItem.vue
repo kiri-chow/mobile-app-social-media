@@ -12,13 +12,14 @@ const isAdmin = ref(userInfo.role === 'admin');
 const pending = ref(false);
 const props = defineProps({
     user: Object,
-    followedId: Set,
+    isFollowed: Boolean,
+    isFollower: Boolean,
 });
 const isDeleted = ref(false);
 const buttonType = computed(() => {
     if (props.user._id === userInfo._id) {
         return 0;
-    } else if (props.followedId.has(props.user._id)) {
+    } else if (props.isFollowed) {
         return -1;
     } else {
         return 1;
@@ -87,7 +88,8 @@ async function removeOneUser() {
                 <ion-text color="primary">
                     <h4 class="ion-no-margin">{{ [user.first_name, user.last_name].join(' ') }}</h4>
                 </ion-text>
-                <ion-text color="medium">@{{ user.username }}</ion-text>
+                <ion-text color="medium"><p>@{{ user.username }}</p></ion-text>
+                <ion-text v-if="isFollower" color="medium"><p class="notes">Following You</p></ion-text>
             </ion-col>
             <ion-col v-if='isAdmin && buttonType !== 0' size='auto'>
                 <ion-button @click="alertDelete" color="danger" :disabled="pending">
@@ -106,6 +108,14 @@ async function removeOneUser() {
     </IonCard>
 </template>
 <style>
+.user p {
+    margin: 0;
+}
+
+.notes {
+    font-size: xx-small;
+}
+
 ion-spinner {
     margin-right: 0;
 }

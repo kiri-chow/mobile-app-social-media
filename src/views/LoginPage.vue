@@ -6,7 +6,7 @@
           <img src="@/assets/logo.svg" alt="Logo" width="60" height="60" />
           <ion-card-header>
             <ion-text color="primary">
-              <h5>
+              <h5 v-if="currentSegment === 'login'">
                 Login for our incredible social network!
               </h5>
             </ion-text>

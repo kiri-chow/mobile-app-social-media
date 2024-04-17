@@ -76,10 +76,13 @@ async function submitPost() {
         } else {
             data = await createPost(post.value, post.value.parent_id);
         }
+        // update post info
         if (data.id) {
-            post.value._id;
+            post.value._id = data.id;
         }
         post.value.user = [props.user];
+        post.value.user_id = props.user._id;
+
         emit('newPost', post.value);
         post.value = { content: '' };
     } catch (err) {

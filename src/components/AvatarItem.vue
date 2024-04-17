@@ -18,7 +18,7 @@
 </template>
 <script setup>
 import { defineProps, onMounted, ref, defineEmits, computed, watch } from "vue";
-import { IonAvatar, IonButton, IonIcon } from '@ionic/vue';
+import { IonAvatar, IonRow, IonCol, IonIcon } from '@ionic/vue';
 import { closeCircle, arrowUpOutline } from "ionicons/icons"
 
 const props = defineProps({
