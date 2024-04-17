@@ -48,7 +48,10 @@ import { createPost, updatePost } from "../assets/api/post";
 
 const emit = defineEmits(['newPost']);
 const props = defineProps({
-    postData: Object,
+    postData: {
+        type: Object,
+        default: {},
+    },
     isEditing: {
         type: Boolean,
         default: false,
@@ -68,7 +71,7 @@ const imageText = computed(() => `${post.value.image_url ? 'Remove' : 'Upload'} 
 
 onMounted(() => {
     if (props.postData) {
-        post.value = Object.assign({}, props.postData);
+        Object.assign(post.value, props.postData);
     }
 });
 

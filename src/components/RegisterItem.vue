@@ -115,7 +115,7 @@ const isPasswordMismatch = computed(() => passwordConfirm.value ? passwordConfir
 
 onMounted(() => {
   if (props.userData) {
-    user.value = { ...props.userData };
+    user.value = {...user.value, ...props.userData};
   }
 })
 
